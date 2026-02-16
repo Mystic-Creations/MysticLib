@@ -1,18 +1,20 @@
 package net.mysticcreations.lib.forge;
 
-import dev.architectury.platform.forge.EventBuses;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import net.mysticcreations.lib.MysticLib;
 
-@Mod(MysticLib.MOD_ID)
+@Mod(MysticLib.MODID)
 public final class LibForge {
-    public LibForge() {
-        // Submit our event bus to let Architectury API register our content on the right time.
-        EventBuses.registerModEventBus(MysticLib.MOD_ID, FMLJavaModLoadingContext.get().getModEventBus());
+    public static IEventBus EVENT_BUS;
 
-        // Run our common setup.
+    public LibForge(FMLJavaModLoadingContext modContext) {
+        MinecraftForge.EVENT_BUS.register(this);
+        EVENT_BUS = modContext.getModEventBus();
+
         MysticLib.init();
     }
 }

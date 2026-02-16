@@ -1,4 +1,7 @@
 package net.mysticcreations.lib.config.json;
 
-public class JsonBooleanEntry {
+import com.google.gson.JsonElement;
+import net.mysticcreations.lib.config.CommonEntry;
+
+public class JsonBooleanEntry extends CommonEntry<Boolean, JsonElement> {
 }

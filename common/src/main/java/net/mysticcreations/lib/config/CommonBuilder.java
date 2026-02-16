@@ -1,4 +1,6 @@
 package net.mysticcreations.lib.config;
 
-public class CommonBuilder {
+import net.mysticcreations.lib.config.builder.NewBuild;
+
+public abstract class CommonBuilder<S> extends Builder<S> implements NewBuild {
 }

@@ -11,8 +11,8 @@ public interface SpecDefine {
     Supplier<Double> create(String key, double defaultValue, double min, double max);
     Supplier<String> create(String key, String defaultValue);
 
-    SpecDefine describeCat(String comment);
-    SpecDefine describe(String comment);
+    SpecDefine describeCat(String description);
+    SpecDefine describe(String description);
 
     SpecDefine gameRestart();
     SpecDefine noSync();

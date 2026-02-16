@@ -1,4 +1,4 @@
 package net.mysticcreations.lib.config;
 
-public class Builder {
+public abstract class Builder<S> {
 }

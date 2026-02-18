@@ -48,6 +48,10 @@ subprojects {
 
     dependencies {
         minecraft "net.minecraft:minecraft:$rootProject.minecraft_version"
+
+        // Only for the sake of compiling - not to be used for anything else!
+        modCompileOnly(fabricApi.module("fabric-recipe-api-v1", rootProject.fabric_api_version))
+
         mappings loom.layered() {
             officialMojangMappings()
             parchment("org.parchmentmc.data:parchment-${minecraft_version}:${parchment_version}@zip")

@@ -9,12 +9,4 @@ public class ResourceUtil {
     public static ResourceLocation libResource(String path) {
         return new ResourceLocation(MODID, path);
     }
-
-    //Actual Library stuff
-    public static ResourceLocation asResource(String modId, String path) {
-        return new ResourceLocation(modId, path);
-    }
-    public static ResourceLocation asPath(String path) {
-        return new ResourceLocation(path);
-    }
 }

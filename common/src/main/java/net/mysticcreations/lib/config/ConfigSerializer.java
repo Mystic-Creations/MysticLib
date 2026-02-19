@@ -1,144 +1,150 @@
 package net.mysticcreations.lib.config;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.dataformat.toml.TomlMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.reflect.TypeToken;
-import net.minecraft.resources.ResourceLocation;
+import com.github.groundbreakingmc.tomly.Tomly;
+import com.github.groundbreakingmc.tomly.nodes.Node;
+import com.github.groundbreakingmc.tomly.nodes.TomlDocument;
+import com.github.groundbreakingmc.tomly.nodes.impl.BooleanNode;
+import com.github.groundbreakingmc.tomly.nodes.impl.NumberNode;
+import com.github.groundbreakingmc.tomly.nodes.impl.StringNode;
+import com.github.groundbreakingmc.tomly.options.PreserveOptions;
+import com.github.groundbreakingmc.tomly.options.WriterOptions;
+import net.mysticcreations.lib.MysticLib;
+import net.mysticcreations.lib.config.fields.ConfigCat;
 import net.mysticcreations.lib.config.fields.ConfigField;
 
 import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.lang.reflect.Field;
-import java.lang.reflect.Type;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-// Responsible for Parsing ConfigsSpecification Object to json and putting data from json to ConfigSpecifications
 public class ConfigSerializer {
-    private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-    private final Path configPath;
-    private final FileTypes configType;
 
-    public Map<String, ConfigField<?>> configMap;
-    public final ResourceLocation id;
+    ConfigDefinition config;
 
-    public ConfigSerializer(ResourceLocation id, FileTypes configType, boolean subfolder) {
-        this.id = id;
-        this.configMap = new HashMap<>();
-        String fileExtension = "";
-        switch (configType) {
-            case JSON:
-                fileExtension = ".json";
-            case TOML:
-                fileExtension = ".toml";
-        }
-        if (subfolder) {
-            this.configPath = Paths.get("config", id.getNamespace(), id.getPath() + fileExtension);
-        } else {
-            this.configPath = Paths.get("config", id.getNamespace() + "_" + id.getPath() + fileExtension);
-        }
-        this.configType = configType;
-    }
+    public ConfigSerializer(ConfigDefinition config) {
 
-    public void parseFromDefinition(ConfigDefinition def) {
-        Class<? extends ConfigDefinition> configSpecClass = def.getClass();
-        for (Field field : configSpecClass.getDeclaredFields()) {
-            field.setAccessible(true);
-            if (field.getType().isAssignableFrom(ConfigField.class)) {
-                String fieldName = field.getName();
-                Object value = null;
-                try {
-                    value = field.get(def);
-                } catch (IllegalAccessException e) {
-                    // ignore it
-                }
-                if (value != null) {
-                    this.configMap.put(fieldName, (ConfigField<?>) value);
-                }
-            }
-        }
-    }
-
-    public void writeConfig() {
-        Map<String, Object> encodedMap = this.createEncodedMap();
-
-        String configFileContent = "";
-
-        // get the file contents
-        switch (this.configType) {
-            case JSON:
-                configFileContent = gson.toJson(encodedMap);
-            case TOML:
-
-                TomlMapper mapper = new TomlMapper();
-                try {
-                    configFileContent = mapper.writeValueAsString(this.configMap);
-                } catch (JsonProcessingException ignored) {
-                    // YEAH WE SHOULD NOT BE IGNORING THIS ERROR PROB...
-                }
-        }
-        File file = this.configPath.toFile();
-
-        try (FileWriter writer = new FileWriter(file)) {
-            writer.write(configFileContent);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        this.config = config;
 
     }
 
-    public boolean loadConfig() throws JsonProcessingException {
-        File file = this.configPath.toFile();
-        if (!file.exists()) {
-            return false;
-        }
-        // read the file
-        String configFileContent;
-        try {
-            configFileContent = Files.readString(file.toPath());
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        Map<String, Object> encodedMap = switch (this.configType) {
-            case JSON -> {
-                Type type = new TypeToken<Map<String, Object>>() {
-                }.getType();
-                yield gson.fromJson(configFileContent, type);
-            }
+    public void write(File file) {
+
+        switch (config.getConfigType()) {
             case TOML -> {
-                TomlMapper mapper = new TomlMapper();
-                yield mapper.readValue(configFileContent, new TypeReference<>() {
-                });
+                PreserveOptions parseOpts = PreserveOptions.builder()
+                        .preserveHeaderComments(true)
+                        .preserveInlineComments(true)
+                        .preserveBlankLines(true)
+                        .build();
+                TomlDocument document = Tomly.parse(file.getPath(), false, parseOpts);
+
+                convertConfigListToToml(document, config.items, "");
+
+                WriterOptions options = WriterOptions.builder()
+                        .writeHeaderComments(true)
+                        .writeInlineComments(true)
+                        .writeBlankLines(true)
+                        .build();
+
+                document.save(Paths.get(file.getPath()), options);
             }
-        };
-
-        // put the encoded values back into the configMap
-        loadFromEncodedMap(encodedMap);
-        return true;
-    }
-
-    private void loadFromEncodedMap(Map<String, Object> map) {
-        for (String key : map.keySet()) {
-            ConfigField<?> field = configMap.get(key);
-            if (field != null) {
-                field.setFieldValue(map.get(key));
+            case JSON -> {
+                // do stuff
             }
         }
     }
 
-    public Map<String, Object> createEncodedMap() {
-        Map<String, Object> map = new HashMap<>();
-        for (String key : configMap.keySet()) {
-            ConfigField<?> field = configMap.get(key);
-            map.put(key, field.getValue());
+    public void convertConfigListToToml(TomlDocument document, List<ConfigItem> configList, String prefix) {
+        for (ConfigItem item : configList) {
+            if (item instanceof ConfigCat cat) {
+
+                convertConfigListToToml(document, cat.items,  prefix + cat.catName + ".");
+            }
+            if (item instanceof ConfigField<?> field) {
+
+                if (field.type == String.class) {
+                    StringNode node = new StringNode((String) field.value, field.headerComments, field.inlineComment);
+                    document.set(prefix + field.fieldName, node);
+                }
+                if (field.type.isAssignableFrom(Number.class)) {
+                    NumberNode node = new NumberNode((Number) field.value, field.headerComments, field.inlineComment);
+                    document.set(prefix + field.fieldName, node);
+                }
+                if (field.type == Boolean.class) {
+                    BooleanNode node = new BooleanNode((Boolean) field.value, field.headerComments, field.inlineComment);
+                    document.set(prefix + field.fieldName, node);
+                }
+            }
         }
-        return map;
     }
+
+    public void read(File file) {
+
+        switch (config.getConfigType()) {
+            case TOML -> {
+                PreserveOptions parseOpts = PreserveOptions.builder()
+                        .preserveHeaderComments(true)
+                        .preserveInlineComments(true)
+                        .preserveBlankLines(true)
+                        .build();
+                TomlDocument document = Tomly.parse(file.getPath(), false, parseOpts);
+
+                applyTomlValuesToConfig(config, document, config.items, "");
+            }
+            case JSON -> {
+                // do stuff
+            }
+        }
+    }
+
+    public void applyTomlValuesToConfig(ConfigDefinition config, TomlDocument document, List<ConfigItem> configList, String prefix) {
+        for (ConfigItem item : configList) {
+            if (item instanceof ConfigCat cat) {
+
+                applyTomlValuesToConfig(config, document, cat.items,prefix + cat.catName + ".");
+            }
+            if (item instanceof ConfigField<?> field) {
+
+                if (field.type == String.class) {
+                    Node node = document.get(prefix + field.fieldName);
+
+                    if (node == null) {
+                        MysticLib.LOGGER.warn("Field {} isn't present in config {}", field.fieldName, config.id.toString());
+                    }
+
+                    if (node instanceof StringNode) {
+                        field.setFieldValue(node.value());
+                    } else {
+                        MysticLib.LOGGER.warn("Field {} is not a String in config {}", field.fieldName,  config.id.toString());
+                    }
+                }
+                if (field.type.isAssignableFrom(Number.class)) {
+                    Node node = document.get(prefix + field.fieldName);
+
+                    if (node == null) {
+                        MysticLib.LOGGER.warn("Field {} isn't present in config {}", field.fieldName, config.id.toString());
+                    }
+
+                    if (node instanceof NumberNode) {
+                        field.setFieldValue(node.value());
+                    } else {
+                        MysticLib.LOGGER.warn("Field {} is not a Number in config {}", field.fieldName,  config.id.toString());
+                    }
+                }
+                if (field.type == Boolean.class) {
+                    Node node = document.get(prefix + field.fieldName);
+
+                    if (node == null) {
+                        MysticLib.LOGGER.warn("Field {} isn't present in config {}", field.fieldName, config.id.toString());
+                    }
+
+                    if (node instanceof BooleanNode) {
+                        field.setFieldValue(node.value());
+                    } else {
+                        MysticLib.LOGGER.warn("Field {} is not a Boolean in config {}", field.fieldName, config.id.toString());
+                    }
+                }
+            }
+        }
+    }
+
 }

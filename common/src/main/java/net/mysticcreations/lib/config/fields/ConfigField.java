@@ -1,13 +1,21 @@
 package net.mysticcreations.lib.config.fields;
 
-public abstract class ConfigField<T> {
-    public String fieldName;
-    public T value;
-    public Class<T> type;
+import net.mysticcreations.lib.config.ConfigItem;
 
-    public ConfigField(Class<T> type, T defaultValue) {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class ConfigField<T> implements ConfigItem {
+    public final String fieldName;
+    public T value;
+    public final Class<T> type;
+    public String inlineComment = null;
+    public List<String> headerComments = new ArrayList<>();
+
+    public ConfigField(Class<T> type, String fieldName, T defaultValue) {
         this.type = type;
         value = defaultValue;
+        this.fieldName = fieldName;
     }
 
     public boolean setValue(T value) {
@@ -16,6 +24,14 @@ public abstract class ConfigField<T> {
         }
         this.value = value;
         return true;
+    }
+
+    public void addInlineComment(String comment) {
+        this.inlineComment = comment;
+    }
+
+    public void addHeaderComment(String comment) {
+        this.headerComments.add(comment);
     }
 
     public abstract boolean validateValue(T value);

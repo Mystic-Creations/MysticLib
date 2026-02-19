@@ -55,8 +55,8 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:$rootProject.jackson_dataformat_toml_version")
-    include("com.fasterxml.jackson.dataformat:jackson-dataformat-toml:$rootProject.jackson_dataformat_toml_version")
+    implementation 'com.github.GroundbreakingMC:TOMLy:1.0.0'
+    include 'com.github.GroundbreakingMC:TOMLy:1.0.0'
 }
 
 processResources {

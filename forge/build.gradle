@@ -4,7 +4,7 @@ plugins {
 
 loom {
     forge {
-        mixinConfig "underthestars.mixins.json"
+        mixinConfig "mysticlib.mixins.json"
     }
 }
 
@@ -20,7 +20,7 @@ loom {
     runs {
         data {
             data()
-            programArgs "--all", "--mod", "totemfactory"
+            programArgs "--all", "--mod", "mysticlib"
             programArgs "--output", generatedResources.absolutePath
             programArgs "--existing", file("src/main/resources").absolutePath
         }

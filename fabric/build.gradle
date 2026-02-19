@@ -17,7 +17,7 @@ loom {
             server()
             vmArg("-Dfabric-api.datagen")
             vmArg("-Dfabric-api.datagen.output-dir=${file("src/main/generated")}")
-            vmArg("-Dfabric-api.datagen.modid=totemfactory")
+            vmArg("-Dfabric-api.datagen.modid=mysticlib")
             vmArg("-Dporting_lib.datagen.existing_resources=${file("src/main/resources")}")
         }
     }

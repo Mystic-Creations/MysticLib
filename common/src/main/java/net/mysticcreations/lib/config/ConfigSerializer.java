@@ -49,7 +49,7 @@ public class ConfigSerializer {
                 PreserveOptions parseOpts = PreserveOptions.builder()
                         .preserveHeaderComments(true)
                         .preserveInlineComments(true)
-                        .preserveBlankLines(true)
+                        .preserveBlankLines(false)
                         .build();
 
                 if (!configFile.exists()) {
@@ -65,14 +65,14 @@ public class ConfigSerializer {
                     }
                 }
 
-                TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), false, parseOpts);
+                TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), true, parseOpts);
 
                 convertConfigListToToml(document, config.items, "");
 
                 WriterOptions options = WriterOptions.builder()
                         .writeHeaderComments(true)
                         .writeInlineComments(true)
-                        .writeBlankLines(true)
+                        .writeBlankLines(false)
                         .build();
 
                 document.save(configFile.toPath(), options);
@@ -128,10 +128,11 @@ public class ConfigSerializer {
                 PreserveOptions parseOpts = PreserveOptions.builder()
                         .preserveHeaderComments(true)
                         .preserveInlineComments(true)
-                        .preserveBlankLines(true)
+                        .preserveBlankLines(false)
                         .build();
 
-                TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), false, parseOpts);
+
+                TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), true, parseOpts);
 
                 applyTomlValuesToConfig(config, document, config.items, "");
             }

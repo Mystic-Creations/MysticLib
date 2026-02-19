@@ -1,6 +1,6 @@
-package net.mysticcreations.lib.config.specification;
+package net.mysticcreations.lib.config.fields;
 
-public class LongField extends ConfigField<Long>{
+public class LongField extends ConfigField<Long> {
     long min;
     long max;
     double step;

@@ -1,4 +1,4 @@
-package net.mysticcreations.lib.config.specification.annotations;
+package net.mysticcreations.lib.config.annotations;
 
 public @interface OpenCat {
     String value();

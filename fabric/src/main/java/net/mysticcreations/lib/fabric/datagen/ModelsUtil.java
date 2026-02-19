@@ -29,7 +29,7 @@ public class ModelsUtil extends FabricModelProvider {
     public static BlockModelGenerators genBlockstatesOnly(Block block) {
         ///Code taken from a mc 26.1 project by JustMili, shit needs to be ported down
         /// This code is for making horizontal rotation blockstates (y-axis), we need to make it so there's multiple choices
-        //ResourceUtil.libResource("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath());  <- ignore this
+        //MysticLib.asResource("block/" + BuiltInRegistries.BLOCK.getKey(block).getPath());  <- ignore this
         ResourceLocation id = ResourceLocation.tryParse(block.getName().getString()); //This defo won't work exactly, need to redo
         MultiVariant model = BlockModelGenerators.plainVariant(id);
 

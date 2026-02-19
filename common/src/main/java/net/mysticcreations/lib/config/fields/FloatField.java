@@ -1,6 +1,6 @@
-package net.mysticcreations.lib.config.specification;
+package net.mysticcreations.lib.config.fields;
 
-public class FloatField extends ConfigField<Float>{
+public class FloatField extends ConfigField<Float> {
     float min;
     float max;
     double step;

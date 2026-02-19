@@ -1,6 +1,6 @@
-package net.mysticcreations.lib.config.specification;
+package net.mysticcreations.lib.config.fields;
 
-public class DoubleField extends ConfigField<Double>{
+public class DoubleField extends ConfigField<Double> {
     double min;
     double max;
     double step;

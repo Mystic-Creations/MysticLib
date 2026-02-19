@@ -1,6 +1,6 @@
 package net.mysticcreations.lib.config;
 
-public enum ConfigFileType {
+public enum FileTypes {
     JSON,
     TOML
 }

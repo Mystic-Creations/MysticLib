@@ -7,10 +7,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import net.minecraft.resources.ResourceLocation;
-import net.mysticcreations.lib.config.specification.ConfigField;
-import net.mysticcreations.lib.config.specification.ConfigSpecification;
+import net.mysticcreations.lib.config.fields.ConfigField;
 
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -23,23 +21,22 @@ import java.util.HashMap;
 import java.util.Map;
 
 // Responsible for Parsing ConfigsSpecification Object to json and putting data from json to ConfigSpecifications
-public class ConfigSpecParser {
-
+public class ConfigSerializer {
     private static final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private final Path configPath;
-    private final ConfigFileType configType;
+    private final FileTypes configType;
 
     public Map<String, ConfigField<?>> configMap;
     public final ResourceLocation id;
 
-    public ConfigSpecParser(ResourceLocation id, ConfigFileType configType, boolean subfolder) {
+    public ConfigSerializer(ResourceLocation id, FileTypes configType, boolean subfolder) {
         this.id = id;
         this.configMap = new HashMap<>();
         String fileExtension = "";
         switch (configType) {
             case JSON:
                 fileExtension = ".json";
-            case  TOML:
+            case TOML:
                 fileExtension = ".toml";
         }
         if (subfolder) {
@@ -50,15 +47,15 @@ public class ConfigSpecParser {
         this.configType = configType;
     }
 
-    public void parseConfigSpecification(ConfigSpecification spec) {
-        Class<? extends ConfigSpecification> configSpecClass = spec.getClass();
+    public void parseFromDefinition(ConfigDefinition def) {
+        Class<? extends ConfigDefinition> configSpecClass = def.getClass();
         for (Field field : configSpecClass.getDeclaredFields()) {
             field.setAccessible(true);
             if (field.getType().isAssignableFrom(ConfigField.class)) {
                 String fieldName = field.getName();
                 Object value = null;
                 try {
-                    value = field.get(spec);
+                    value = field.get(def);
                 } catch (IllegalAccessException e) {
                     // ignore it
                 }
@@ -69,13 +66,13 @@ public class ConfigSpecParser {
         }
     }
 
-    public void writeToConfig() {
+    public void writeConfig() {
         Map<String, Object> encodedMap = this.createEncodedMap();
 
         String configFileContent = "";
 
         // get the file contents
-        switch(this.configType) {
+        switch (this.configType) {
             case JSON:
                 configFileContent = gson.toJson(encodedMap);
             case TOML:
@@ -88,7 +85,6 @@ public class ConfigSpecParser {
                 }
         }
         File file = this.configPath.toFile();
-
 
         try (FileWriter writer = new FileWriter(file)) {
             writer.write(configFileContent);
@@ -139,11 +135,10 @@ public class ConfigSpecParser {
 
     public Map<String, Object> createEncodedMap() {
         Map<String, Object> map = new HashMap<>();
-        for (String key :configMap.keySet()) {
+        for (String key : configMap.keySet()) {
             ConfigField<?> field = configMap.get(key);
             map.put(key, field.getValue());
         }
         return map;
     }
-
 }

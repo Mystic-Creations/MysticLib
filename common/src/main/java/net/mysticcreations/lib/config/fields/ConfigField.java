@@ -1,4 +1,4 @@
-package net.mysticcreations.lib.config.specification;
+package net.mysticcreations.lib.config.fields;
 
 public abstract class ConfigField<T> {
     public String fieldName;

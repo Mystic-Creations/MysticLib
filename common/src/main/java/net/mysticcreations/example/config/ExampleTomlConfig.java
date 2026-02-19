@@ -2,18 +2,18 @@ package net.mysticcreations.example.config;
 
 import net.minecraft.resources.ResourceLocation;
 import net.mysticcreations.lib.MysticLib;
-import net.mysticcreations.lib.config.ConfigFileType;
-import net.mysticcreations.lib.config.specification.BooleanField;
-import net.mysticcreations.lib.config.specification.ConfigSpecification;
-import net.mysticcreations.lib.config.specification.DoubleField;
-import net.mysticcreations.lib.config.specification.IntegerField;
-import net.mysticcreations.lib.config.specification.annotations.CloseCat;
-import net.mysticcreations.lib.config.specification.annotations.Comment;
-import net.mysticcreations.lib.config.specification.annotations.OpenCat;
+import net.mysticcreations.lib.config.FileTypes;
+import net.mysticcreations.lib.config.fields.BooleanField;
+import net.mysticcreations.lib.config.ConfigDefinition;
+import net.mysticcreations.lib.config.fields.DoubleField;
+import net.mysticcreations.lib.config.fields.IntegerField;
+import net.mysticcreations.lib.config.annotations.CloseCat;
+import net.mysticcreations.lib.config.annotations.Comment;
+import net.mysticcreations.lib.config.annotations.OpenCat;
 
-public class ExampleTomlConfig extends ConfigSpecification {
+public class ExampleTomlConfig extends ConfigDefinition {
     public ExampleTomlConfig() {
-        super(new ResourceLocation(MysticLib.MODID, "example_config_name"), ConfigFileType.TOML);
+        super(new ResourceLocation(MysticLib.MODID, "example_config_name"), FileTypes.TOML);
     }
     @OpenCat("NUMBERS")
     @Comment("These are example integer config values")

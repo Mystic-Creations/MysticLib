@@ -1,6 +1,6 @@
-package net.mysticcreations.lib.config.specification;
+package net.mysticcreations.lib.config.fields;
 
-public class StringField extends ConfigField<String>{
+public class StringField extends ConfigField<String> {
     public StringField(String defaultValue) {
         super(String.class, defaultValue);
     }

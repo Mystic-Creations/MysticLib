@@ -1,4 +1,4 @@
-package net.mysticcreations.lib.config.specification;
+package net.mysticcreations.lib.config.fields;
 
 public class BooleanField extends ConfigField<Boolean> {
     public BooleanField(boolean value) {

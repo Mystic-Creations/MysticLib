@@ -1,4 +1,4 @@
-package net.mysticcreations.lib.config.specification;
+package net.mysticcreations.lib.config.fields;
 
 public class IntegerField extends ConfigField<Integer> {
     public final int min;

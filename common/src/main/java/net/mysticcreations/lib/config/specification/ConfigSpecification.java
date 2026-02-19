@@ -13,14 +13,10 @@ public abstract class ConfigSpecification {
         this.configType = type;
     }
 
-    /*
-    Override this method to change the filetype of the config (:
-     */
     public ConfigFileType getConfigType() {
         // json as default cause js{
         //
-        //    public transienton is cool
+        //    public transient is cool
         return ConfigFileType.JSON;
     }
-
 }

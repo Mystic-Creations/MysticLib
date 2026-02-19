@@ -1,7 +1,6 @@
 package net.mysticcreations.lib.config.specification;
 
 public class IntegerField extends ConfigField<Integer> {
-
     public final int min;
     public final int max;
     public final int step;
@@ -12,7 +11,6 @@ public class IntegerField extends ConfigField<Integer> {
         this.max = Integer.MAX_VALUE;
         this.step = 1;
     }
-
     public IntegerField(Integer defaultValue, int min, int max) {
         super(Integer.class, defaultValue);
         this.min = min;
@@ -30,10 +28,4 @@ public class IntegerField extends ConfigField<Integer> {
     public boolean validateValue(Integer value) {
         return value >= this.min && value <= this.max;
     }
-
-
-    public boolean setValue(int value) {
-        return super.setValue(value);
-    }
-
 }

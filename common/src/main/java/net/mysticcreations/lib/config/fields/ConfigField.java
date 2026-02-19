@@ -26,7 +26,7 @@ public abstract class ConfigField<T> implements ConfigItem {
         return true;
     }
 
-    public void addInlineComment(String comment) {
+    public void setInlineComment(String comment) {
         this.inlineComment = comment;
     }
 

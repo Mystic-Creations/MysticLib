@@ -55,8 +55,10 @@ dependencies {
     common(project(path: ':common', configuration: 'namedElements')) { transitive = false }
     shadowBundle project(path: ':common', configuration: 'transformProductionForge')
 
-    implementation 'com.github.GroundbreakingMC:TOMLy:1.0.0'
-    include 'com.github.GroundbreakingMC:TOMLy:1.0.0'
+    modImplementation 'com.github.GroundbreakingMC:TOMLy:1.0.1'
+    include 'com.github.GroundbreakingMC:TOMLy:1.0.1'
+    modImplementation "com.github.groundbreakingmc:Fission:1.0.0"
+    include "com.github.groundbreakingmc:Fission:1.0.0"
 }
 
 processResources {

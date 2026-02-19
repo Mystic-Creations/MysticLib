@@ -4,6 +4,7 @@ import com.github.groundbreakingmc.tomly.Tomly;
 import com.github.groundbreakingmc.tomly.nodes.Node;
 import com.github.groundbreakingmc.tomly.nodes.TomlDocument;
 import com.github.groundbreakingmc.tomly.nodes.impl.BooleanNode;
+import com.github.groundbreakingmc.tomly.nodes.impl.DocumentNode;
 import com.github.groundbreakingmc.tomly.nodes.impl.NumberNode;
 import com.github.groundbreakingmc.tomly.nodes.impl.StringNode;
 import com.github.groundbreakingmc.tomly.options.PreserveOptions;
@@ -13,20 +14,35 @@ import net.mysticcreations.lib.config.fields.ConfigCat;
 import net.mysticcreations.lib.config.fields.ConfigField;
 
 import java.io.File;
-import java.nio.file.Paths;
+import java.io.FileWriter;
+import java.nio.file.Path;
 import java.util.*;
 
 public class ConfigSerializer {
 
-    ConfigDefinition config;
+    private ConfigDefinition config;
+    private File configFile;
 
-    public ConfigSerializer(ConfigDefinition config) {
+    public ConfigSerializer(ConfigDefinition config, boolean subfolder) {
 
         this.config = config;
 
+        String fileExtension = "";
+        switch (config.configType) {
+            case JSON:
+                fileExtension = ".json";
+            case TOML:
+                fileExtension = ".toml";
+        }
+        if (subfolder) {
+            this.configFile = new File("config/" + config.id.getNamespace() + "/" + config.id.getPath() + fileExtension);
+        } else {
+            this.configFile = new File("config/" + config.id.getNamespace() + "_" + config.id.getPath() + fileExtension);
+        }
+
     }
 
-    public void write(File file) {
+    public void writeToConfigFile() {
 
         switch (config.getConfigType()) {
             case TOML -> {
@@ -35,7 +51,21 @@ public class ConfigSerializer {
                         .preserveInlineComments(true)
                         .preserveBlankLines(true)
                         .build();
-                TomlDocument document = Tomly.parse(file.getPath(), false, parseOpts);
+
+                if (!configFile.exists()) {
+                    configFile.getParentFile().mkdirs();
+                    try {
+                        configFile.createNewFile();
+                        FileWriter fw = new FileWriter(configFile);
+                        fw.write("mysticlib = 1");
+                        fw.close();
+                    } catch (java.io.IOException e) {
+                        MysticLib.LOGGER.error("Failed to create config file {}", configFile.toString());
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), false, parseOpts);
 
                 convertConfigListToToml(document, config.items, "");
 
@@ -45,7 +75,7 @@ public class ConfigSerializer {
                         .writeBlankLines(true)
                         .build();
 
-                document.save(Paths.get(file.getPath()), options);
+                document.save(configFile.toPath(), options);
             }
             case JSON -> {
                 // do stuff
@@ -77,16 +107,31 @@ public class ConfigSerializer {
         }
     }
 
-    public void read(File file) {
+    public void readFromConfigFile() {
 
         switch (config.getConfigType()) {
             case TOML -> {
+
+                if (!configFile.exists()) {
+                    configFile.getParentFile().mkdirs();
+                    try {
+                        configFile.createNewFile();
+                        FileWriter fw = new FileWriter(configFile);
+                        fw.write("mysticlib = 1");
+                        fw.close();
+                    } catch (java.io.IOException e) {
+                        MysticLib.LOGGER.error("Failed to create config file {}", configFile.toString());
+                        throw new RuntimeException(e);
+                    }
+                }
+
                 PreserveOptions parseOpts = PreserveOptions.builder()
                         .preserveHeaderComments(true)
                         .preserveInlineComments(true)
                         .preserveBlankLines(true)
                         .build();
-                TomlDocument document = Tomly.parse(file.getPath(), false, parseOpts);
+
+                TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), false, parseOpts);
 
                 applyTomlValuesToConfig(config, document, config.items, "");
             }

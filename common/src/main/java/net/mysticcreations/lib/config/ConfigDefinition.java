@@ -29,10 +29,6 @@ public abstract class ConfigDefinition {
         }
     }
 
-    protected void addComment(String comment) {
-        items.add(new ConfigComment(comment));
-    }
-
     protected void openCat(String catName) {
         ConfigCat cat = new ConfigCat(catName);
         cats.push(cat);

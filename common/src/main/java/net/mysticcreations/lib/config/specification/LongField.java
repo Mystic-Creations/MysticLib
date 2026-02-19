@@ -1,8 +1,8 @@
 package net.mysticcreations.lib.config.specification;
 
 public class LongField extends ConfigField<Long>{
-    double min;
-    double max;
+    long min;
+    long max;
     double step;
 
     public LongField(Long defaultValue) {

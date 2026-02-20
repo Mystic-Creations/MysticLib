@@ -1,10 +1,13 @@
 package net.mysticcreations.lib.config.toml;
 
-public abstract class TomlTableBase extends TomlElement {
+public abstract class TomlTableBase<T extends TomlTableBase<T>> extends TomlElement<T> {
 
     public String name;
 
     public TomlTableBase(String name) {
+        if (name.contains("[") || name.contains("]")) {
+            throw new IllegalArgumentException("Table names cannot contain [ or ] characters");
+        }
         this.name = name;
     }
 

@@ -1,6 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
-public class TomlStringField extends TomlField {
+public class TomlStringField extends TomlField<TomlStringField> {
 
     public String value;
 

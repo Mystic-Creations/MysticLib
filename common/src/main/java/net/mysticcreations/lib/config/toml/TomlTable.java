@@ -1,17 +1,11 @@
 package net.mysticcreations.lib.config.toml;
 
-public class TomlTable extends TomlTableBase {
+public class TomlTable extends TomlTableBase<TomlTable> {
 
     public String name;
 
     public TomlTable(String name) {
         super(name);
-    }
-
-    public int getTableDepth() {
-        int depth = name.split("\\.").length - 1;
-        if (depth < 1) return 0;
-        return depth;
     }
 
     @Override

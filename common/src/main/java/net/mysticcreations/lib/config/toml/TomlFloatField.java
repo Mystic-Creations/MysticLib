@@ -1,6 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
-public class TomlFloatField extends TomlField {
+public class TomlFloatField extends TomlField<TomlFloatField> {
 
     public float value;
 

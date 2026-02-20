@@ -23,10 +23,10 @@ public class TomlBuilder {
 
     public String build() throws TomlParsingException {
         StringBuilder sb = new StringBuilder();
-        TomlTableBase tomlTable = null;
+        TomlTableBase<?> tomlTable = null;
         Set<String> tableNames = new HashSet<>();
 
-        for (TomlElement element : this.elements) {
+        for (TomlElement<?> element : this.elements) {
 
             if (element instanceof TomlTable) {
                 if (!tableNames.add(((TomlTable) element).name)) {
@@ -35,7 +35,7 @@ public class TomlBuilder {
             }
             if (element instanceof TomlTableBase) {
                 sb.append("\n");
-                tomlTable = (TomlTableBase) element;
+                tomlTable = (TomlTableBase<?>) element;
                 String indent = "";
                 // Header Comments
                 for (String comment: element.headerComments) {

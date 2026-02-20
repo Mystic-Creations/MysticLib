@@ -15,4 +15,9 @@ public class TomlBuilderOptions {
         return this;
     }
 
+    public TomlBuilderOptions indentAmount(int indentAmount) {
+        this.indentAmount = indentAmount;
+        return this;
+    }
+
 }

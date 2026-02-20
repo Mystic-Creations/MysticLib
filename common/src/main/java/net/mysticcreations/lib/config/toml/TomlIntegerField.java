@@ -1,6 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
-public class TomlIntegerField extends TomlField {
+public class TomlIntegerField extends TomlField<TomlIntegerField> {
 
     public int value;
 

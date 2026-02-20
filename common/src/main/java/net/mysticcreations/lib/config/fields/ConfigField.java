@@ -26,12 +26,14 @@ public abstract class ConfigField<T> implements ConfigItem {
         return true;
     }
 
-    public void setInlineComment(String comment) {
+    public ConfigField<T> setInlineComment(String comment) {
         this.inlineComment = comment;
+        return this;
     }
 
-    public void addHeaderComment(String comment) {
+    public ConfigField<T> addHeaderComment(String comment) {
         this.headerComments.add(comment);
+        return this;
     }
 
     public abstract boolean validateValue(T value);

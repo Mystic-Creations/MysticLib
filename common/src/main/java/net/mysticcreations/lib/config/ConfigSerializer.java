@@ -3,10 +3,7 @@ package net.mysticcreations.lib.config;
 import com.github.groundbreakingmc.tomly.Tomly;
 import com.github.groundbreakingmc.tomly.nodes.Node;
 import com.github.groundbreakingmc.tomly.nodes.TomlDocument;
-import com.github.groundbreakingmc.tomly.nodes.impl.BooleanNode;
-import com.github.groundbreakingmc.tomly.nodes.impl.DocumentNode;
-import com.github.groundbreakingmc.tomly.nodes.impl.NumberNode;
-import com.github.groundbreakingmc.tomly.nodes.impl.StringNode;
+import com.github.groundbreakingmc.tomly.nodes.impl.*;
 import com.github.groundbreakingmc.tomly.options.PreserveOptions;
 import com.github.groundbreakingmc.tomly.options.WriterOptions;
 import net.mysticcreations.lib.MysticLib;
@@ -75,6 +72,8 @@ public class ConfigSerializer {
                         .writeBlankLines(false)
                         .build();
 
+                Map<String, Object> raw = document.raw();
+
                 document.save(configFile.toPath(), options);
             }
             case JSON -> {
@@ -86,16 +85,19 @@ public class ConfigSerializer {
     public void convertConfigListToToml(TomlDocument document, List<ConfigItem> configList, String prefix) {
         for (ConfigItem item : configList) {
             if (item instanceof ConfigCat cat) {
-
-                convertConfigListToToml(document, cat.items,  prefix + cat.catName + ".");
+                Map<String, Node> entries = new HashMap<>();
+                convertConfigListToToml(entries, cat.items,  "");
+                TableNode table = new TableNode(cat.catName, entries, new ArrayList<>(), "");
+                document.set(cat.catName, table);
             }
+
             if (item instanceof ConfigField<?> field) {
 
                 if (field.type == String.class) {
                     StringNode node = new StringNode((String) field.value, field.headerComments, field.inlineComment);
                     document.set(prefix + field.fieldName, node);
                 }
-                if (field.type.isAssignableFrom(Number.class)) {
+                if (Number.class.isAssignableFrom(field.type)) {
                     NumberNode node = new NumberNode((Number) field.value, field.headerComments, field.inlineComment);
                     document.set(prefix + field.fieldName, node);
                 }
@@ -107,6 +109,31 @@ public class ConfigSerializer {
         }
     }
 
+    public void convertConfigListToToml(Map<String, Node> list, List<ConfigItem> configList, String prefix) {
+        for (ConfigItem item : configList) {
+            if (item instanceof ConfigCat cat) {
+                Map<String, Node> entries = new HashMap<>();
+                convertConfigListToToml(entries, cat.items,  "");
+                TableNode table = new TableNode(cat.catName, entries, new ArrayList<>(), "");
+                list.put(cat.catName, table);
+            }
+            if (item instanceof ConfigField<?> field) {
+
+                if (field.type == String.class) {
+                    StringNode node = new StringNode((String) field.value, field.headerComments, field.inlineComment);
+                    list.put(prefix + field.fieldName, node);
+                }
+                if (Number.class.isAssignableFrom(field.type)) {
+                    NumberNode node = new NumberNode((Number) field.value, field.headerComments, field.inlineComment);
+                    list.put(prefix + field.fieldName, node);
+                }
+                if (field.type == Boolean.class) {
+                    BooleanNode node = new BooleanNode((Boolean) field.value, field.headerComments, field.inlineComment);
+                    list.put(prefix + field.fieldName, node);
+                }
+            }
+        }
+    }
     public void readFromConfigFile() {
 
         switch (config.getConfigType()) {
@@ -163,7 +190,7 @@ public class ConfigSerializer {
                         MysticLib.LOGGER.warn("Field {} is not a String in config {}", field.fieldName,  config.id.toString());
                     }
                 }
-                if (field.type.isAssignableFrom(Number.class)) {
+                if (Number.class.isAssignableFrom(field.type)) {
                     Node node = document.get(prefix + field.fieldName);
 
                     if (node == null) {

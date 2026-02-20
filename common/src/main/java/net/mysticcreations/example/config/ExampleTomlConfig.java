@@ -45,10 +45,14 @@ public class ExampleTomlConfig extends ConfigDefinition {
         addField(exampleTrueBool1);
         closeCat();
 
+        openCat("False");
+
         exampleFalseBool.setInlineComment("False Bool");
         addField(exampleFalseBool);
         exampleFalseBool1.setInlineComment("False Bool 1");
         addField(exampleFalseBool1);
+
+        closeCat();
 
         closeCat();
 

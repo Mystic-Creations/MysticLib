@@ -81,10 +81,9 @@ public class ConfigSerializer {
     public void convertConfigListToToml(TomlBuilder builder, List<ConfigItem> configList, String prefix) {
         for (ConfigItem item : configList) {
             if (item instanceof ConfigCat cat) {
-                Map<String, Node> entries = new HashMap<>();
-                TomlArrayTable table = new TomlArrayTable(prefix + cat.catName);
+                TomlTable table = new TomlTable(prefix + cat.catName);
                 builder.addElement(table);
-                convertConfigListToToml(builder, cat.items, prefix);
+                convertConfigListToToml(builder, cat.items, prefix + cat.catName + ".");
             }
 
             if (item instanceof ConfigField<?> field) {
@@ -117,31 +116,6 @@ public class ConfigSerializer {
         }
     }
 
-    public void convertConfigListToToml(Map<String, Node> list, List<ConfigItem> configList, String prefix) {
-        for (ConfigItem item : configList) {
-            if (item instanceof ConfigCat cat) {
-                Map<String, Node> entries = new HashMap<>();
-                convertConfigListToToml(entries, cat.items,  "");
-                TableNode table = new TableNode(cat.catName, entries, new ArrayList<>(), "");
-                list.put(cat.catName, table);
-            }
-            if (item instanceof ConfigField<?> field) {
-
-                if (field.type == String.class) {
-                    StringNode node = new StringNode((String) field.value, field.headerComments, field.inlineComment);
-                    list.put(prefix + field.fieldName, node);
-                }
-                if (Number.class.isAssignableFrom(field.type)) {
-                    NumberNode node = new NumberNode((Number) field.value, field.headerComments, field.inlineComment);
-                    list.put(prefix + field.fieldName, node);
-                }
-                if (field.type == Boolean.class) {
-                    BooleanNode node = new BooleanNode((Boolean) field.value, field.headerComments, field.inlineComment);
-                    list.put(prefix + field.fieldName, node);
-                }
-            }
-        }
-    }
     public void readFromConfigFile() {
 
         switch (config.getConfigType()) {
@@ -180,6 +154,8 @@ public class ConfigSerializer {
     public void applyTomlValuesToConfig(ConfigDefinition config, TomlDocument document, List<ConfigItem> configList, String prefix) {
         for (ConfigItem item : configList) {
             if (item instanceof ConfigCat cat) {
+
+                TomlTable table = new TomlTable(prefix + cat.catName);
 
                 applyTomlValuesToConfig(config, document, cat.items,prefix + cat.catName + ".");
             }

@@ -29,9 +29,10 @@ public class TomlBuilder {
         for (TomlElement<?> element : this.elements) {
 
             if (element instanceof TomlTable) {
-                if (!tableNames.add(((TomlTable) element).name)) {
+                if (tableNames.contains(((TomlTable) element).name)) {
                     throw new TomlParsingException("Two tables cannot have the same name!");
                 }
+                tableNames.add(((TomlTable) element).name);
             }
             if (element instanceof TomlTableBase) {
                 sb.append("\n");
@@ -43,7 +44,7 @@ public class TomlBuilder {
                 }
 
                 if (options.indentTables) {
-                    int depth = tomlTable.getTableDepth() - 1;
+                    int depth = tomlTable.getTableDepth();
                     if (depth > 0) {
                         indent = " ".repeat(depth * options.indentAmount);
                     }

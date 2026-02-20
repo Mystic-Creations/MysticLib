@@ -35,8 +35,13 @@ public abstract class ConfigDefinition {
     }
 
     protected void closeCat() {
-        ConfigCat cat = cats.pop();
-        items.add(cat);
+        ConfigCat poppedCat = cats.pop();
+        if (cats.empty()) {
+            items.add(poppedCat);
+        } else {
+            ConfigCat cat = cats.peek();
+            cat.addItem(poppedCat);
+        }
     }
 
 

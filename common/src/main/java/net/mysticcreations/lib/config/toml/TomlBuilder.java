@@ -24,7 +24,7 @@ public class TomlBuilder {
     public String build() throws TomlParsingException {
         StringBuilder sb = new StringBuilder();
         TomlTableBase<?> tomlTable = null;
-        Set<String> tableNames = new HashSet<>();
+        Set<String[]> tableNames = new HashSet<>();
 
         for (TomlElement<?> element : this.elements) {
 

@@ -12,12 +12,13 @@ public abstract class ConfigDefinition {
     public final FileTypes configType;
 
     public List<ConfigItem> items;
-    private Stack<ConfigCat> cats = new Stack<>();
+    private Stack<ConfigCat> cats;
 
     public ConfigDefinition(ResourceLocation id, FileTypes type) {
         this.id = id;
         this.configType = type;
         items = new ArrayList<>();
+        cats = new Stack<>();
     }
 
     protected void addField(ConfigField<?> item) {

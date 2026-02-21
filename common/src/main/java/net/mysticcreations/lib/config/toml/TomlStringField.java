@@ -16,16 +16,7 @@ public class TomlStringField extends TomlField<TomlStringField> {
 
     @Override
     public String toString() {
-        return name + " = \"" + escapeTomlString(value) + "\"";
-    }
-
-    private static String escapeTomlString(String value) {
-        return value
-                .replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
+        return name + " = \"" + TomlUtils.escapeTomlString(value) + "\"";
     }
 
 }

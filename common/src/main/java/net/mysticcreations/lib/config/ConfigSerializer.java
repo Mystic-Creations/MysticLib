@@ -15,11 +15,12 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
+import java.util.stream.Stream;
 
 public class ConfigSerializer {
 
     private ConfigDefinition config;
-    private File configFile;
+    public File configFile;
 
     public ConfigSerializer(ConfigDefinition config, boolean subfolder) {
 
@@ -50,7 +51,7 @@ public class ConfigSerializer {
 
                 TomlBuilder builder = new TomlBuilder(options);
 
-                convertConfigListToToml(builder, config.items, "");
+                convertConfigListToToml(builder, config.items, new ArrayList<>());
 
                 try {
                     String toml = builder.build();
@@ -78,23 +79,17 @@ public class ConfigSerializer {
         }
     }
 
-    public void convertConfigListToToml(TomlBuilder builder, List<ConfigItem> configList, String prefix) {
+    public void convertConfigListToToml(TomlBuilder builder, List<ConfigItem> configList, ArrayList<String> prefix) {
         List<ConfigCat> lateTables = new ArrayList<>();
         for (ConfigItem item : configList) {
             if (item instanceof ConfigCat cat) {
-                if (prefix.isEmpty()) {
-                    TomlTable table = new TomlTable(prefix + cat.catName);
-                    builder.addElement(table);
-                    convertConfigListToToml(builder, cat.items, prefix + cat.catName + ".");
-                } else {
-                    lateTables.add(cat);
-                }
+                lateTables.add(cat);
             }
 
             if (item instanceof ConfigField<?> field) {
 
                 if (field.type == String.class) {
-                    TomlStringField element = new TomlStringField(prefix + field.fieldName,(String) field.value)
+                    TomlStringField element = new TomlStringField(field.fieldName,(String) field.value)
                             .setHeaderComments(field.headerComments)
                             .setInlineComment(field.inlineComment);
                     builder.addElement(element);
@@ -120,9 +115,11 @@ public class ConfigSerializer {
             }
         }
         for (ConfigCat cat: lateTables) {
-            TomlTable table = new TomlTable(prefix + cat.catName);
+            ArrayList<String> tableName = new ArrayList<>(prefix);
+            tableName.add(cat.catName);
+            TomlTable table = new TomlTable(tableName.toArray(new String[0]));
             builder.addElement(table);
-            convertConfigListToToml(builder, cat.items, prefix + cat.catName + ".");
+            convertConfigListToToml(builder, cat.items, tableName);
         }
     }
 
@@ -153,63 +150,10 @@ public class ConfigSerializer {
 
                 TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), true, parseOpts);
 
-                applyTomlValuesToConfig(config, document, config.items, "");
+                //applyTomlValuesToConfig(config, document, config.items, );
             }
             case JSON -> {
                 // do stuff
-            }
-        }
-    }
-
-    public void applyTomlValuesToConfig(ConfigDefinition config, TomlDocument document, List<ConfigItem> configList, String prefix) {
-        for (ConfigItem item : configList) {
-            if (item instanceof ConfigCat cat) {
-
-                TomlTable table = new TomlTable(prefix + cat.catName);
-
-                applyTomlValuesToConfig(config, document, cat.items,prefix + cat.catName + ".");
-            }
-            if (item instanceof ConfigField<?> field) {
-
-                if (field.type == String.class) {
-                    Node node = document.get(prefix + field.fieldName);
-
-                    if (node == null) {
-                        MysticLib.LOGGER.warn("Field {} isn't present in config {}", field.fieldName, config.id.toString());
-                    }
-
-                    if (node instanceof StringNode) {
-                        field.setFieldValue(node.value());
-                    } else {
-                        MysticLib.LOGGER.warn("Field {} is not a String in config {}", field.fieldName,  config.id.toString());
-                    }
-                }
-                if (Number.class.isAssignableFrom(field.type)) {
-                    Node node = document.get(prefix + field.fieldName);
-
-                    if (node == null) {
-                        MysticLib.LOGGER.warn("Field {} isn't present in config {}", field.fieldName, config.id.toString());
-                    }
-
-                    if (node instanceof NumberNode) {
-                        field.setFieldValue(node.value());
-                    } else {
-                        MysticLib.LOGGER.warn("Field {} is not a Number in config {}", field.fieldName,  config.id.toString());
-                    }
-                }
-                if (field.type == Boolean.class) {
-                    Node node = document.get(prefix + field.fieldName);
-
-                    if (node == null) {
-                        MysticLib.LOGGER.warn("Field {} isn't present in config {}", field.fieldName, config.id.toString());
-                    }
-
-                    if (node instanceof BooleanNode) {
-                        field.setFieldValue(node.value());
-                    } else {
-                        MysticLib.LOGGER.warn("Field {} is not a Boolean in config {}", field.fieldName, config.id.toString());
-                    }
-                }
             }
         }
     }

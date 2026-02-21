@@ -5,6 +5,8 @@ import org.apache.commons.io.IOUtils;
 
 import java.io.*;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TomlParser {
 
@@ -32,13 +34,28 @@ public class TomlParser {
 
         for (String line : lines) {
 
-            String whiteSpaceRemoved = line.stripLeading();
-
             if (line.isEmpty()) {
                 continue;
             }
 
-            // Scheduled for when I finally learn regex.
+            Pattern arrayTablePattern = Pattern.compile("^\\s*\\[\\[(.+?)\\]\\]\\s*(?:#.*)?$");
+            Matcher arrayTableMatcher = arrayTablePattern.matcher(line);
+
+            if (arrayTableMatcher.matches()) {
+
+            }
+
+            Pattern tablePattern = Pattern.compile("^\\s*\\[([^\\[\\]]+?)\\]\\s*(?:#.*)?$");
+            Matcher tableMatcher = tablePattern.matcher(line);
+
+            if (tableMatcher.matches()) {
+
+                String tableName = tableMatcher.group(1);
+
+                //MysticLib.LOGGER.error();
+
+                
+            }
         }
 
     }

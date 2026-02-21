@@ -12,7 +12,7 @@ public class ExampleTomlConfig extends ConfigDefinition {
 
         openCat("NUMBERS");
 
-        openCat("NoDecimal");
+        openCat("NoDecimal \" defsdafsdr retewr __-- --fdg-sdfg-");
         exampleInteger.addHeaderComment("Header comment 1").setInlineComment("Example comment for example_int");
         addField(exampleInteger);
         exampleInteger1.setInlineComment("Example comment for example_int_1");

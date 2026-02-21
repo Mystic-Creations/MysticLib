@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class TomlBuilder {
 
-    private List<TomlElement> elements;
+    private List<TomlElement<?>> elements;
     private TomlBuilderOptions options;
 
 
@@ -16,7 +16,7 @@ public class TomlBuilder {
         this.options = options;
     }
 
-    public TomlBuilder addElement(TomlElement element) {
+    public TomlBuilder addElement(TomlElement<?> element) {
         this.elements.add(element);
         return this;
     }

@@ -35,9 +35,12 @@ public class TomlBuilder {
                 tableNames.add(((TomlTable) element).name);
             }
             if (element instanceof TomlTableBase) {
-                sb.append("\n");
+                if (!sb.isEmpty()) {
+                    sb.append("\n");
+                }
                 tomlTable = (TomlTableBase<?>) element;
                 String indent = "";
+
                 // Header Comments
                 for (String comment: element.headerComments) {
                     sb.append(indent).append("# ").append(comment).append("\n");
@@ -80,6 +83,7 @@ public class TomlBuilder {
             }
             sb.append('\n');
         }
+        
         return sb.toString();
     }
 

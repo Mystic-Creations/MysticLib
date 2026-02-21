@@ -79,11 +79,16 @@ public class ConfigSerializer {
     }
 
     public void convertConfigListToToml(TomlBuilder builder, List<ConfigItem> configList, String prefix) {
+        List<ConfigCat> lateTables = new ArrayList<>();
         for (ConfigItem item : configList) {
             if (item instanceof ConfigCat cat) {
-                TomlTable table = new TomlTable(prefix + cat.catName);
-                builder.addElement(table);
-                convertConfigListToToml(builder, cat.items, prefix + cat.catName + ".");
+                if (prefix.isEmpty()) {
+                    TomlTable table = new TomlTable(prefix + cat.catName);
+                    builder.addElement(table);
+                    convertConfigListToToml(builder, cat.items, prefix + cat.catName + ".");
+                } else {
+                    lateTables.add(cat);
+                }
             }
 
             if (item instanceof ConfigField<?> field) {
@@ -113,6 +118,11 @@ public class ConfigSerializer {
                     builder.addElement(element);
                 }
             }
+        }
+        for (ConfigCat cat: lateTables) {
+            TomlTable table = new TomlTable(prefix + cat.catName);
+            builder.addElement(table);
+            convertConfigListToToml(builder, cat.items, prefix + cat.catName + ".");
         }
     }
 

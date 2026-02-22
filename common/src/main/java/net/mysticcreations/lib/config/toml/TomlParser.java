@@ -56,6 +56,9 @@ public class TomlParser {
 
                 
             }
+
+            Pattern stringValuePattern = Pattern.compile("^\\s*(?:(?:\".*?\"|'.*?')|[A-Za-z0-9_-]+)\\s*=\\s*(?:\".*?\"|'.*?')\\s*(?:#.*)?$");
+            Matcher stringValueMatcher = stringValuePattern.matcher(line);
         }
 
     }

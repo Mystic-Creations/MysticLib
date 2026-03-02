@@ -5,9 +5,7 @@ public class TomlIntegerField extends TomlField<TomlIntegerField> {
     public int value;
 
     public TomlIntegerField(String name, int value) {
-        super(new TomlDottedElementName().addName(name,  TomlStringUtils.isNoQuoteStringValid(name)
-                ? TomlStringType.NO_QUOTE
-                : TomlStringType.DOUBLE));
+        super(TomlDottedElementName.fromString(name));
         this.value = value;
     }
 

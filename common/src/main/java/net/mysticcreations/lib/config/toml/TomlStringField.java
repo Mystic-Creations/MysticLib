@@ -6,9 +6,15 @@ public class TomlStringField extends TomlField<TomlStringField> {
     public TomlStringType type;
 
     public TomlStringField(String name, String value) {
+        super(TomlDottedElementName.fromString(name));
+        this.type = TomlStringType.DOUBLE;
+        this.value = value;
+    }
+
+    public TomlStringField(TomlDottedElementName name, String value, TomlStringType type) {
         super(name);
         this.value = value;
-        this.type = TomlStringType.DOUBLE;
+        this.type = type;
     }
 
     public TomlStringField setValue(String value) {

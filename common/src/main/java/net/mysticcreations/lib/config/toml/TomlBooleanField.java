@@ -6,9 +6,7 @@ public class TomlBooleanField extends TomlField<TomlBooleanField> {
     boolean value;
 
     public TomlBooleanField(String name, boolean value) {
-        super(new TomlDottedElementName().addName(name,  TomlStringUtils.isNoQuoteStringValid(name)
-                ? TomlStringType.NO_QUOTE
-                : TomlStringType.DOUBLE));
+        super(TomlDottedElementName.fromString(name));
         this.value = value;
     }
 

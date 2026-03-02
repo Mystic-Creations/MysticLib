@@ -5,9 +5,7 @@ public class TomlFloatField extends TomlField<TomlFloatField> {
     public float value;
 
     public TomlFloatField(String name, float value) {
-        super(new TomlDottedElementName().addName(name,  TomlStringUtils.isNoQuoteStringValid(name)
-                ? TomlStringType.NO_QUOTE
-                : TomlStringType.DOUBLE));
+        super(TomlDottedElementName.fromString(name));
         this.value = value;
     }
 

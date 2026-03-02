@@ -37,6 +37,15 @@ public class TomlDottedElementName {
         return this;
     }
 
+    public static TomlDottedElementName fromString(String string) {
+        TomlDottedElementName name = new TomlDottedElementName();
+        TomlStringType type = TomlStringUtils.isNoQuoteStringValid(string)
+                ? TomlStringType.NO_QUOTE
+                : TomlStringType.DOUBLE;
+        name.addName(string, type);
+        return name;
+    }
+
     public String getName(int index) {
         return name.get(index);
     }

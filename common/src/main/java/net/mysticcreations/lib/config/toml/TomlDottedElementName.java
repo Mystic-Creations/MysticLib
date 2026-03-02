@@ -37,4 +37,16 @@ public class TomlDottedElementName {
         return this;
     }
 
+    public String getName(int index) {
+        return name.get(index);
+    }
+
+    public TomlStringType getTomlType(int index) {
+        return stringTypes.get(index);
+    }
+
+    public int depth() {
+        return name.size();
+    }
+
 }

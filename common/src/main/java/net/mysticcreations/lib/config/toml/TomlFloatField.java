@@ -5,6 +5,13 @@ public class TomlFloatField extends TomlField<TomlFloatField> {
     public float value;
 
     public TomlFloatField(String name, float value) {
+        super(new TomlDottedElementName().addName(name,  TomlStringUtils.isNoQuoteStringValid(name)
+                ? TomlStringType.NO_QUOTE
+                : TomlStringType.DOUBLE));
+        this.value = value;
+    }
+
+    public TomlFloatField(TomlDottedElementName name, float value) {
         super(name);
         this.value = value;
     }

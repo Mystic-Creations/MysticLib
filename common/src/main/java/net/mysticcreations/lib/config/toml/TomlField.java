@@ -5,9 +5,9 @@ import java.util.List;
 
 public class TomlField<T extends TomlField<T>> extends TomlElement<T> {
 
-    public String name;
+    public TomlDottedElementName name;
 
-    public TomlField(String name) {
+    public TomlField(TomlDottedElementName name) {
         this.name = name;
     }
 

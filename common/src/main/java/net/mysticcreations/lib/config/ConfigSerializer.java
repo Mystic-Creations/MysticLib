@@ -117,7 +117,11 @@ public class ConfigSerializer {
         for (ConfigCat cat: lateTables) {
             ArrayList<String> tableName = new ArrayList<>(prefix);
             tableName.add(cat.catName);
-            TomlTable table = new TomlTable(tableName.toArray(new String[0]));
+            TomlDottedElementName elementName = new TomlDottedElementName();
+            tableName.forEach(it -> {
+                elementName.addName(it, TomlStringType.DOUBLE);
+            });
+            TomlTable table = new TomlTable(elementName);
             builder.addElement(table);
             convertConfigListToToml(builder, cat.items, tableName);
         }

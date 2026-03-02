@@ -6,9 +6,9 @@ import java.util.regex.Pattern;
 public class TomlArrayTable extends TomlTableBase<TomlArrayTable> {
 
     public TomlArrayTable(String name) {
-        super(new String[]{name});
+        super(new TomlDottedElementName().addName(name, TomlStringType.DOUBLE));
     }
-    public TomlArrayTable(String[] name) {
+    public TomlArrayTable(TomlDottedElementName name) {
         super(name);
     }
 
@@ -16,8 +16,8 @@ public class TomlArrayTable extends TomlTableBase<TomlArrayTable> {
     public String toString() {
         StringBuilder builder = new StringBuilder();
         builder.append("[[");
-        for (int i = 0; i < name.length; i++) {
-            String item = name[i];
+        for (int i = 0; i < name.depth(); i++) {
+            String item = name.getName(i);
             Pattern pattern = Pattern.compile("([A-Za-z0-9_-]+)");
             Matcher matcher = pattern.matcher(item);
 
@@ -26,7 +26,7 @@ public class TomlArrayTable extends TomlTableBase<TomlArrayTable> {
             } else {
                 builder.append("\"").append(TomlStringUtils.escapeTomlString(item)).append("\"");
             }
-            if (i != (name.length - 1)) {
+            if (i != (name.depth() - 1)) {
                 builder.append(".");
             }
         }

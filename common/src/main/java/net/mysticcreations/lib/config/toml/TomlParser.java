@@ -3,7 +3,10 @@ package net.mysticcreations.lib.config.toml;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TomlParser {
 
@@ -77,9 +80,63 @@ public class TomlParser {
         return whitespace;
     }
 
-    private StringResult
+    private StringResult getDotSeparatedStringASCIElement(String chars, int index) throws TomlParsingException {
+
+        TomlDottedElementName element = new TomlDottedElementName();
+
+        String buildingString = "";
+        int stringType = -1;
+        boolean trailingDot = false;
+
+        for (int i = index; index < chars.length(); i++) {
+
+            int character = chars.codePointAt(i);
+
+            if (Character.isWhitespace(character)) {
+                continue;
+            }
+
+            if (character == '"') {
+                StringResult result = getDoubleQuotedStringElement(chars, i);
+                element.addName(result.character, TomlStringType.DOUBLE);
+            }
+
+            Pattern pattern = Pattern.compile("[A-Za-z0-9_-]");
+            Matcher matcher = pattern.matcher("");
+
+            if (matcher.matches()) {
+
+            }
+
+            if (character == '.') {
+                if (trailingDot) {
+                    throw new TomlParsingException("Two dots without content in between");
+                }
+                trailingDot = true;
+            }
+
+            if (character == '=') {
+                // break normally
+                if (trailingDot) {
+                    throw new TomlParsingException("Dot trailing without content");
+                }
+
+            }
+
+        }
+
+        return new StringResult(chars, index);
+    }
 
     private StringResult getDoubleQuotedStringElement(String chars, int index) throws TomlParsingException {
+        return getDoubleQuotedStringElement(chars, index, false);
+    }
+
+    private StringResult getDoubleQuotedStringElementWithTriples(String chars, int index) throws TomlParsingException {
+        return getDoubleQuotedStringElement(chars, index, true);
+    }
+
+    private StringResult getDoubleQuotedStringElement(String chars, int index, boolean allowTriples) throws TomlParsingException {
         if (chars.isEmpty()) {
             return null;
         }
@@ -89,7 +146,7 @@ public class TomlParser {
         if (index < 0) {
             throw new TomlParsingException("Index on getDoubleQuotedStingElement negative");
         }
-        if (index < chars.length() - 2) {
+        if (index < chars.length() - 2 && allowTriples) {
             int firstQuote = chars.codePointAt(index);
             int secondQuote = chars.codePointAt(index+1);
             int thirdQuote = chars.codePointAt(index+2);
@@ -107,6 +164,10 @@ public class TomlParser {
                 i += escape.length - 1;
                 string.append(escape.character);
                 continue;
+            }
+
+            if (chars.codePointAt(i) == '\n') {
+                throw new TomlParsingException("String not finished before line break");
             }
 
             if (chars.codePointAt(i) == '\"') {

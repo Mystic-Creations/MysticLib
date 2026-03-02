@@ -24,7 +24,7 @@ public class TomlTable extends TomlTableBase<TomlTable> {
             if (matcher.matches()) {
                 builder.append(item);
             } else {
-                builder.append("\"").append(TomlUtils.escapeTomlString(item)).append("\"");
+                builder.append("\"").append(TomlStringUtils.escapeTomlString(item)).append("\"");
             }
             if (i != (name.length - 1)) {
                 builder.append(".");

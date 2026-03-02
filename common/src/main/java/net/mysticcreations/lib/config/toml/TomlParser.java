@@ -211,6 +211,31 @@ public class TomlParser {
         return new StringResult(string.toString(), index + 1);
     }
 
+    private StringResult getLiteralStringElement(String chars, int index, boolean allowTriples) throws TomlParsingException {
+        if (chars.isEmpty()) {
+            return null;
+        }
+        if (index >= chars.length()) {
+            return null;
+        }
+        if (index < 0) {
+            throw new TomlParsingException("Index on getLiteralStringElement negative");
+        }
+        StringBuilder string = new StringBuilder();
+        for (int i = index + 1; i < chars.length(); i++) {
+            if (chars.codePointAt(i) == '\n') {
+                throw new TomlParsingException("String not finished before line break");
+            }
+
+            if (chars.codePointAt(i) == '\'') {
+                break;
+            }
+
+            string.append(chars.codePointAt(i));
+        }
+        return new StringResult(string.toString(), index + 1);
+    }
+
     private StringResult getTripleDoubleQuotedStringElement(String chars, int index) {
 
         if (index >= chars.length() - 2) {

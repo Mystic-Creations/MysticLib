@@ -31,7 +31,19 @@ public class TomlParser {
     private void parseToml(String tomlContent) throws TomlParsingException {
 
         int index = 0;
+        boolean comment = false;
         while (index < tomlContent.length()) {
+
+            if (comment) {
+                index += 1;
+                continue;
+            }
+
+            if (tomlContent.codePointAt(index) == '#') {
+                index += 1;
+                comment = true;
+                continue;
+            }
 
             if (Character.isWhitespace(tomlContent.codePointAt(index))) {
                 index += 1;
@@ -41,16 +53,32 @@ public class TomlParser {
                 index += 1;
             }
 
+
+
             if (tomlContent.codePointAt(index) == '[') {
-                int whitespace = getTrailingWhitespace(tomlContent, index);
-                index += whitespace;
+                index += getTrailingWhitespace(tomlContent, index);
                 if (index >= tomlContent.length()) {
-                    throw new TomlParsingException("");
+                    throw new TomlParsingException("Array opened. but no name or closure.");
                 }
                 if (tomlContent.codePointAt(index) == '"' | tomlContent.codePointAt(index) == '\'') {
+                    TomlDottedElementResult result = getDotSeparatedStringASCIElement(tomlContent, index);
+                    index += result.length;
+
+                    // ignore whitespace again
+                    index += getTrailingWhitespace(tomlContent, index);
+
+                    // get the end bracket
+                    if (tomlContent.codePointAt(index) == ']') {
+                        index += 1;
+                        // add the element
+                        TomlTable table = new TomlTable(result.name);
+                        elements.add(table);
+                    }
+
                 }
                 // Array Table
                 if (tomlContent.codePointAt(index) == '[') {
+                    index += 1;
 
                 }
             }
@@ -59,7 +87,7 @@ public class TomlParser {
 
     }
 
-    public int getTrailingWhitespace(String chars, int index) {
+    private int getTrailingWhitespace(String chars, int index) {
         if (chars.isEmpty()) {
             return 0;
         }
@@ -80,12 +108,15 @@ public class TomlParser {
         return whitespace;
     }
 
-    private StringResult getDotSeparatedStringASCIElement(String chars, int index) throws TomlParsingException {
+    public record TomlDottedElementResult(TomlDottedElementName name, int length) {}
+
+    private TomlDottedElementResult getDotSeparatedStringASCIElement(String chars, int index) throws TomlParsingException {
 
         TomlDottedElementName element = new TomlDottedElementName();
 
         String buildingString = "";
         int stringType = -1;
+        int endIndex = -1;
         boolean trailingDot = false;
 
         for (int i = index; index < chars.length(); i++) {
@@ -120,12 +151,13 @@ public class TomlParser {
                 if (trailingDot) {
                     throw new TomlParsingException("Dot trailing without content");
                 }
-
+                endIndex = i;
+                break;
             }
 
         }
 
-        return new StringResult(chars, index);
+        return new TomlDottedElementResult(element, endIndex - index);
     }
 
     private StringResult getDoubleQuotedStringElement(String chars, int index) throws TomlParsingException {
@@ -179,7 +211,32 @@ public class TomlParser {
         return new StringResult(string.toString(), index + 1);
     }
 
-    public StringResult getTripleDoubleQuotedStringElement(String chars, int index) {
+    private StringResult getLiteralStringElement(String chars, int index, boolean allowTriples) throws TomlParsingException {
+        if (chars.isEmpty()) {
+            return null;
+        }
+        if (index >= chars.length()) {
+            return null;
+        }
+        if (index < 0) {
+            throw new TomlParsingException("Index on getLiteralStringElement negative");
+        }
+        StringBuilder string = new StringBuilder();
+        for (int i = index + 1; i < chars.length(); i++) {
+            if (chars.codePointAt(i) == '\n') {
+                throw new TomlParsingException("String not finished before line break");
+            }
+
+            if (chars.codePointAt(i) == '\'') {
+                break;
+            }
+
+            string.append(chars.codePointAt(i));
+        }
+        return new StringResult(string.toString(), index + 1);
+    }
+
+    private StringResult getTripleDoubleQuotedStringElement(String chars, int index) {
 
         if (index >= chars.length() - 2) {
             return null;

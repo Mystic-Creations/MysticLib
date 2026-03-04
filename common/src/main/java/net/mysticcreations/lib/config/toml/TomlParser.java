@@ -3,6 +3,7 @@ package net.mysticcreations.lib.config.toml;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -133,10 +134,10 @@ public class TomlParser {
             }
 
             Pattern pattern = Pattern.compile("[A-Za-z0-9_-]");
-            Matcher matcher = pattern.matcher("");
+            Matcher matcher = pattern.matcher(TomlStringUtils.getCharacterString(character));
 
             if (matcher.matches()) {
-
+                StringResult result = getNoQuotedStringElement(chars, i);
             }
 
             if (character == '.') {
@@ -247,9 +248,44 @@ public class TomlParser {
         int thirdQuote = chars.codePointAt(index+2);
 
         if (firstQuote == '"' | secondQuote == '"' | thirdQuote == '"') {
-            index += 3;
+            //index += 3;
         }
+
+
         return new StringResult("", 0);
+    }
+
+    private StringResult getNoQuotedStringElement(String chars, int index, ArrayList<Integer> characterBreaks) throws TomlParsingException {
+
+        if (chars.isEmpty()) {
+            return null;
+        }
+        if (index >= chars.length()) {
+            return null;
+        }
+        if (index < 0) {
+            throw new TomlParsingException("Index on getDoubleQuotedStingElement negative");
+        }
+        StringBuilder string = new StringBuilder();
+        for (int i = index + 1; i < chars.length(); i++) {
+
+            int character = chars.codePointAt(i);
+
+            Pattern pattern = Pattern.compile("[A-Za-z0-9_-]");
+            Matcher matcher = pattern.matcher(TomlStringUtils.getCharacterString(character));
+
+            if (matcher.matches()) {
+
+                string.append(TomlStringUtils.getCharacterString(i));
+
+            } else {
+                break;
+            }
+
+            string.append(chars.codePointAt(i));
+        }
+        return new StringResult(string.toString(), index + 1);
+
     }
 
     private record StringResult(String character, int length) {}

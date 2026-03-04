@@ -27,4 +27,8 @@ public class TomlStringUtils {
         Matcher matcher = pattern.matcher(noQuote);
         return matcher.matches();
     }
+
+    public static String getCharacterString(int codePoint) {
+        return new String(Character.toChars(codePoint));
+    }
 }

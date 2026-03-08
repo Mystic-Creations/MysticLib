@@ -1,5 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
+import net.mysticcreations.lib.config.fields.StringField;
 import org.apache.commons.io.IOUtils;
 
 import java.io.*;
@@ -48,20 +49,23 @@ public class TomlParser {
 
             if (Character.isWhitespace(tomlContent.codePointAt(index))) {
                 index += 1;
+                continue;
             }
 
             if (tomlContent.codePointAt(index) == '\n') {
                 index += 1;
+                continue;
             }
 
 
 
             if (tomlContent.codePointAt(index) == '[') {
+                index += 1;
                 index += getTrailingWhitespace(tomlContent, index);
                 if (index >= tomlContent.length()) {
                     throw new TomlParsingException("Array opened. but no name or closure.");
                 }
-                if (tomlContent.codePointAt(index) == '"' | tomlContent.codePointAt(index) == '\'') {
+                if (tomlContent.codePointAt(index) == '"') {
                     TomlDottedElementResult result = getDotSeparatedStringASCIElement(tomlContent, index);
                     index += result.length;
 
@@ -81,7 +85,60 @@ public class TomlParser {
                 if (tomlContent.codePointAt(index) == '[') {
                     index += 1;
 
+                    TomlDottedElementResult result = getDotSeparatedStringASCIElement(tomlContent, index);
+                    index += result.length;
+
+                    // ignore whitespace again
+                    index += getTrailingWhitespace(tomlContent, index);
+
+                    // get the end bracket
+                    if (tomlContent.codePointAt(index) == ']' && tomlContent.codePointAt(index+1) == ']') {
+                        index += 2;
+                        // add the element
+                        TomlArrayTable table = new TomlArrayTable(result.name);
+                        elements.add(table);
+                    }
+
                 }
+                continue;
+            }
+
+            char c = tomlContent.charAt(index);
+            if (TomlStringUtils.isCharInNoQuote(c) || c == '"') {
+                TomlDottedElementResult nameResult = getDotSeparatedStringASCIElement(tomlContent, index);
+                index += nameResult.length;
+
+                index += 1;
+                index += getTrailingWhitespace(tomlContent, index);
+
+                // equals sign
+                if (tomlContent.codePointAt(index) == '=') {
+
+                    index += 1;
+                    index += getTrailingWhitespace(tomlContent, index);
+
+                    if (tomlContent.startsWith("true", index)) {
+                        TomlBooleanField field = new TomlBooleanField(nameResult.name, true);
+                        elements.add(field);
+                    }
+                    if (tomlContent.startsWith("false", index)) {
+                        TomlBooleanField field = new TomlBooleanField(nameResult.name, false);
+                        elements.add(field);
+                    }
+
+                    if (tomlContent.codePointAt(index) == '"') {
+                        StringFieldValueResult stringValueResult = getDoubleQuotedStringElementWithTriples(tomlContent, index);
+                        TomlStringField field = new TomlStringField(nameResult.name, stringValueResult.character, stringValueResult.type);
+                        elements.add(field);
+                    }
+                    if (tomlContent.codePointAt(index) == '\'') {
+                        StringResult stringValueResult = getLiteralStringElement(tomlContent, index);
+                        TomlStringField field = new TomlStringField(nameResult.name, stringValueResult.character, TomlStringType.LITERAL);
+                        elements.add(field);
+                    }
+
+                }
+
             }
 
         }
@@ -115,8 +172,6 @@ public class TomlParser {
 
         TomlDottedElementName element = new TomlDottedElementName();
 
-        String buildingString = "";
-        int stringType = -1;
         int endIndex = -1;
         boolean trailingDot = false;
 
@@ -129,15 +184,22 @@ public class TomlParser {
             }
 
             if (character == '"') {
-                StringResult result = getDoubleQuotedStringElement(chars, i);
-                element.addName(result.character, TomlStringType.DOUBLE);
+                StringFieldValueResult result = getDoubleQuotedStringElement(chars, i);
+                element.addName(result.character, result.type);
             }
 
             Pattern pattern = Pattern.compile("[A-Za-z0-9_-]");
             Matcher matcher = pattern.matcher(TomlStringUtils.getCharacterString(character));
 
             if (matcher.matches()) {
+
                 StringResult result = getNoQuotedStringElement(chars, i);
+
+                if (result == null) {
+                    throw new TomlParsingException("todo: give message here");
+                }
+
+                element.addName(result.character, TomlStringType.NO_QUOTE);
             }
 
             if (character == '.') {
@@ -161,15 +223,18 @@ public class TomlParser {
         return new TomlDottedElementResult(element, endIndex - index);
     }
 
-    private StringResult getDoubleQuotedStringElement(String chars, int index) throws TomlParsingException {
+    private StringFieldValueResult getDoubleQuotedStringElement(String chars, int index) throws TomlParsingException {
         return getDoubleQuotedStringElement(chars, index, false);
     }
 
-    private StringResult getDoubleQuotedStringElementWithTriples(String chars, int index) throws TomlParsingException {
+    private record StringFieldValueResult(String character, int length, TomlStringType type){
+    }
+
+    private StringFieldValueResult getDoubleQuotedStringElementWithTriples(String chars, int index) throws TomlParsingException {
         return getDoubleQuotedStringElement(chars, index, true);
     }
 
-    private StringResult getDoubleQuotedStringElement(String chars, int index, boolean allowTriples) throws TomlParsingException {
+    private StringFieldValueResult getDoubleQuotedStringElement(String chars, int index, boolean allowTriples) throws TomlParsingException {
         if (chars.isEmpty()) {
             return null;
         }
@@ -209,10 +274,10 @@ public class TomlParser {
 
             string.append(chars.codePointAt(i));
         }
-        return new StringResult(string.toString(), index + 1);
+        return new StringFieldValueResult(string.toString(), index + 1, TomlStringType.DOUBLE);
     }
 
-    private StringResult getLiteralStringElement(String chars, int index, boolean allowTriples) throws TomlParsingException {
+    private StringResult getLiteralStringElement(String chars, int index) throws TomlParsingException {
         if (chars.isEmpty()) {
             return null;
         }
@@ -237,8 +302,9 @@ public class TomlParser {
         return new StringResult(string.toString(), index + 1);
     }
 
-    private StringResult getTripleDoubleQuotedStringElement(String chars, int index) {
+    private StringFieldValueResult getTripleDoubleQuotedStringElement(String chars, int index) {
 
+        // todo finish this
         if (index >= chars.length() - 2) {
             return null;
         }
@@ -252,10 +318,10 @@ public class TomlParser {
         }
 
 
-        return new StringResult("", 0);
+        return new StringFieldValueResult("", 0, TomlStringType.TRIPLE_DOUBLE);
     }
 
-    private StringResult getNoQuotedStringElement(String chars, int index, ArrayList<Integer> characterBreaks) throws TomlParsingException {
+    private StringResult getNoQuotedStringElement(String chars, int index) throws TomlParsingException {
 
         if (chars.isEmpty()) {
             return null;

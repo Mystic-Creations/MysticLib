@@ -28,6 +28,10 @@ public class TomlStringUtils {
         return matcher.matches();
     }
 
+    public static boolean isCharInNoQuote(int codePoint) {
+        return Character.isLetterOrDigit(codePoint) || codePoint == '_' || codePoint == '-';
+    }
+
     public static String getCharacterString(int codePoint) {
         return new String(Character.toChars(codePoint));
     }

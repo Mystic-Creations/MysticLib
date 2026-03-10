@@ -7,7 +7,9 @@ import net.mysticcreations.lib.config.toml.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.io.File;
 import java.io.ObjectInputFilter;
+import java.util.List;
 
 public final class MysticLib {
     public static final Logger LOGGER = LogManager.getLogger(MysticLib.class);
@@ -16,10 +18,15 @@ public final class MysticLib {
     public static void init() {
         // Write common init code here.
 
-        ConfigInitializer.initializeConfigDefinition(new ExampleTomlConfig());
-        ConfigInitializer.saveAllConfigs();
+        ExampleTomlConfig config = new ExampleTomlConfig();
 
-
+        try {
+            TomlParser parser = new TomlParser(new File("config/" + config.id.getNamespace() + "/" + config.id.getPath() + ".toml"));
+            List<TomlElement<?>> elements = parser.getElements();
+            LOGGER.info(elements);
+        } catch (TomlParsingException e) {
+            throw new RuntimeException(e);
+        }
 
 
     }

@@ -3,7 +3,7 @@ package net.mysticcreations.lib.config.toml;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TomlTable extends TomlTableBase<TomlTable> {
+public class TomlTable extends TomlTableBase {
 
     public TomlTable(String name) {
         super(new TomlDottedElementName().addName(name, TomlStringType.DOUBLE));

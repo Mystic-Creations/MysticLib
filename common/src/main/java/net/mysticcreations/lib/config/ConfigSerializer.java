@@ -1,10 +1,5 @@
 package net.mysticcreations.lib.config;
 
-import com.github.groundbreakingmc.tomly.Tomly;
-import com.github.groundbreakingmc.tomly.nodes.Node;
-import com.github.groundbreakingmc.tomly.nodes.TomlDocument;
-import com.github.groundbreakingmc.tomly.nodes.impl.*;
-import com.github.groundbreakingmc.tomly.options.PreserveOptions;
 import net.mysticcreations.lib.MysticLib;
 import net.mysticcreations.lib.config.fields.ConfigCat;
 import net.mysticcreations.lib.config.fields.ConfigField;
@@ -13,9 +8,7 @@ import net.mysticcreations.lib.config.toml.*;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.*;
-import java.util.stream.Stream;
 
 public class ConfigSerializer {
 
@@ -89,27 +82,27 @@ public class ConfigSerializer {
             if (item instanceof ConfigField<?> field) {
 
                 if (field.type == String.class) {
-                    TomlStringField element = new TomlStringField(field.fieldName,(String) field.value)
-                            .setHeaderComments(field.headerComments)
-                            .setInlineComment(field.inlineComment);
+                    TomlStringField element = new TomlStringField(field.fieldName,(String) field.value);
+                    element.setHeaderComments(field.headerComments);
+                    element.setInlineComment(field.inlineComment);
                     builder.addElement(element);
                 }
                 if (Integer.class.isAssignableFrom(field.type)) {
-                    TomlIntegerField element = new TomlIntegerField(field.fieldName, (Integer) field.value)
-                            .setHeaderComments(field.headerComments)
-                            .setInlineComment(field.inlineComment);
+                    TomlIntegerField element = new TomlIntegerField(field.fieldName, (Integer) field.value);
+                    element.setHeaderComments(field.headerComments);
+                    element.setInlineComment(field.inlineComment);
                     builder.addElement(element);
                 }
                 if (Float.class.isAssignableFrom(field.type)) {
-                    TomlFloatField element = new TomlFloatField(field.fieldName, (Float) field.value).setHeaderComments(field.headerComments)
-                            .setInlineComment(field.inlineComment)
-                            .setHeaderComments(field.headerComments);
+                    TomlDecimalField element = new TomlDecimalField(field.fieldName, (Float) field.value);
+                    element.setHeaderComments(field.headerComments);
+                    element.setInlineComment(field.inlineComment);
                     builder.addElement(element);
                 }
                 if (field.type == Boolean.class) {
-                    TomlBooleanField element = new TomlBooleanField(field.fieldName, (Boolean) field.value)
-                            .setInlineComment(field.inlineComment)
-                            .setHeaderComments(field.headerComments);
+                    TomlBooleanField element = new TomlBooleanField(field.fieldName, (Boolean) field.value);
+                    element.setInlineComment(field.inlineComment);
+                    element.setHeaderComments(field.headerComments);
                     builder.addElement(element);
                 }
             }
@@ -133,27 +126,27 @@ public class ConfigSerializer {
             case TOML -> {
 
                 if (!configFile.exists()) {
+                    MysticLib.LOGGER.info("No config file found. Creating a template one");
                     configFile.getParentFile().mkdirs();
                     try {
                         configFile.createNewFile();
-                        FileWriter fw = new FileWriter(configFile);
-                        fw.write("mysticlib = 1");
-                        fw.close();
-                    } catch (java.io.IOException e) {
-                        MysticLib.LOGGER.error("Failed to create config file {}", configFile.toString());
-                        throw new RuntimeException(e);
+                        writeToConfigFile();
+                    } catch (IOException e) {
+                        MysticLib.LOGGER.error("Failed to create missing config file");
                     }
+                    return;
                 }
+                try {
+                    TomlParser parser = new TomlParser(configFile);
 
-                PreserveOptions parseOpts = PreserveOptions.builder()
-                        .preserveHeaderComments(true)
-                        .preserveInlineComments(true)
-                        .preserveBlankLines(false)
-                        .build();
+                    List<TomlElement> elements = parser.getElements();
 
+                    MysticLib.LOGGER.info("toml is parse now");
 
-                TomlDocument document = Tomly.parse(configFile.toPath().toAbsolutePath(), true, parseOpts);
-
+                } catch (TomlParsingException e) {
+                    MysticLib.LOGGER.error("Error while parsing TOML of : {}", this.config.id.toString());
+                    MysticLib.LOGGER.error(e);
+                }
                 //applyTomlValuesToConfig(config, document, config.items, );
             }
             case JSON -> {

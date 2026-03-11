@@ -16,17 +16,12 @@ public final class MysticLib {
     public static final String MODID = "mysticlib";
 
     public static void init() {
+
+
         // Write common init code here.
+        ConfigInitializer.initializeConfigDefinition(new ExampleTomlConfig());
+        ConfigInitializer.loadAllConfigs();
 
-        ExampleTomlConfig config = new ExampleTomlConfig();
-
-        try {
-            TomlParser parser = new TomlParser(new File("config/" + config.id.getNamespace() + "/" + config.id.getPath() + ".toml"));
-            List<TomlElement<?>> elements = parser.getElements();
-            LOGGER.info(elements);
-        } catch (TomlParsingException e) {
-            throw new RuntimeException(e);
-        }
 
 
     }

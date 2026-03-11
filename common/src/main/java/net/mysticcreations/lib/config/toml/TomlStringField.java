@@ -1,6 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
-public class TomlStringField extends TomlField<TomlStringField> {
+public class TomlStringField extends TomlField {
 
     public String value;
     public TomlStringType type;
@@ -17,14 +17,12 @@ public class TomlStringField extends TomlField<TomlStringField> {
         this.type = type;
     }
 
-    public TomlStringField setValue(String value) {
+    public void setValue(String value) {
         this.value = value;
-        return this;
     }
 
-    public TomlStringField setStringType(TomlStringType type) {
+    public void setStringType(TomlStringType type) {
         this.type = type;
-        return this;
     }
 
     @Override

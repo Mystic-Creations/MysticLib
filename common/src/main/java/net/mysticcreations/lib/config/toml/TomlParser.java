@@ -1,5 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
+import net.mysticcreations.lib.MysticLib;
 import net.mysticcreations.lib.config.fields.StringField;
 import org.apache.commons.io.IOUtils;
 
@@ -12,7 +13,7 @@ import java.util.regex.Pattern;
 
 public class TomlParser {
 
-    private final List<TomlElement<?>> elements = new ArrayList<>();
+    private final List<TomlElement> elements = new ArrayList<>();
 
     public TomlParser(File tomlFile) throws TomlParsingException{
 
@@ -34,11 +35,13 @@ public class TomlParser {
 
         int index = 0;
         boolean comment = false;
+        boolean lineHasElement = false;
         while (index < tomlContent.length()) {
 
             if (tomlContent.codePointAt(index) == '\n') {
                 index += 1;
                 comment = false;
+                lineHasElement = false;
                 continue;
             }
 
@@ -58,9 +61,11 @@ public class TomlParser {
                 continue;
             }
 
-
-
             if (tomlContent.codePointAt(index) == '[') {
+                if (lineHasElement) {
+                    throw new TomlParsingException("There must be a newline before the next element");
+                }
+                lineHasElement = true;
                 index += 1;
                 index += getTrailingWhitespace(tomlContent, index);
                 if (index >= tomlContent.length()) {
@@ -115,6 +120,10 @@ public class TomlParser {
 
             char c = tomlContent.charAt(index);
             if (TomlStringUtils.isCharInNoQuote(c) || c == '"') {
+                if (lineHasElement) {
+                    throw new TomlParsingException("There must be a newline before the next element");
+                }
+                lineHasElement = true;
                 TomlDottedElementResult nameResult = getDotSeparatedStringASCIElement(tomlContent, index);
                 index += nameResult.length;
 
@@ -127,6 +136,7 @@ public class TomlParser {
                     index += 1;
                     index += getTrailingWhitespace(tomlContent, index);
 
+                    // boolean
                     if (tomlContent.startsWith("true", index)) {
                         TomlBooleanField field = new TomlBooleanField(nameResult.name, true);
                         elements.add(field);
@@ -136,6 +146,24 @@ public class TomlParser {
                         elements.add(field);
                     }
 
+                    // number
+                    if (Character.isDigit(tomlContent.codePointAt(index))) {
+                        NumberResult result = getNumber(tomlContent, index);
+                        if (result.type == 0) {
+                            TomlIntegerField field = new TomlIntegerField(nameResult.name, (Integer) result.number);
+                            if (result.hasExponent) {
+                                field.setExponent(result.exponent);
+                            }
+                        }
+                        if (result.type == 1) {
+                            TomlDecimalField field = new TomlDecimalField(nameResult.name, (Double) result.number);
+                            if (result.hasExponent) {
+                                field.setExponent(result.exponent);
+                            }
+                        }
+                    }
+
+                    // normal and literal strings
                     if (tomlContent.codePointAt(index) == '"') {
                         StringFieldValueResult stringValueResult = getDoubleQuotedStringElementWithTriples(tomlContent, index);
                         TomlStringField field = new TomlStringField(nameResult.name, stringValueResult.character, stringValueResult.type);
@@ -153,7 +181,7 @@ public class TomlParser {
             }
 
         }
-
+        MysticLib.LOGGER.info("");
     }
 
     private int getTrailingWhitespace(String chars, int index) {
@@ -168,7 +196,7 @@ public class TomlParser {
         }
         int whitespace = 0;
         for (int i = index; i < chars.length(); i++) {
-            if (Character.isWhitespace(chars.codePointAt(i))) {
+            if (Character.isWhitespace(chars.codePointAt(i)) && i != '\n') {
                 whitespace += 1;
             } else {
                 break;
@@ -214,7 +242,7 @@ public class TomlParser {
                 }
 
                 element.addName(result.character, TomlStringType.NO_QUOTE);
-                index += result.length;
+                i += result.length;
                 shouldDotOrEnd = true;
                 continue;
             }
@@ -228,11 +256,11 @@ public class TomlParser {
                 }
                 shouldDotOrEnd = false;
                 trailingDot = true;
-                index += 1;
+                i += 1;
                 continue;
             }
 
-            if (character == '=') {
+            if (character == '=' || character == ']') {
                 if (!shouldDotOrEnd) {
                     throw new TomlParsingException("Should expect equals sign here...");
                 }
@@ -306,10 +334,10 @@ public class TomlParser {
 
     private StringResult getLiteralStringElement(String chars, int index) throws TomlParsingException {
         if (chars.isEmpty()) {
-            return null;
+            throw new TomlParsingException("There is no toml...");
         }
         if (index >= chars.length()) {
-            return null;
+            throw new TomlParsingException("Index out of range on getLiteralStringElement");
         }
         if (index < 0) {
             throw new TomlParsingException("Index on getLiteralStringElement negative");
@@ -386,24 +414,19 @@ public class TomlParser {
             throw new TomlParsingException("Index on getDoubleQuotedStingElement negative");
         }
         StringBuilder string = new StringBuilder();
-        for (int i = index + 1; i < chars.length(); i++) {
+        for (int i = index; i < chars.length(); i++) {
 
             int character = chars.codePointAt(i);
 
-            Pattern pattern = Pattern.compile("[A-Za-z0-9_-]");
-            Matcher matcher = pattern.matcher(TomlStringUtils.getCharacterString(character));
+            if (TomlStringUtils.isCharInNoQuote(character)) {
 
-            if (matcher.matches()) {
-
-                string.append(TomlStringUtils.getCharacterString(i));
+                string.append(Character.toString(character));
 
             } else {
                 break;
             }
-
-            string.append(chars.codePointAt(i));
         }
-        return new StringResult(string.toString(), index + 1);
+        return new StringResult(string.toString(), string.length());
 
     }
 
@@ -474,7 +497,88 @@ public class TomlParser {
         }
     }
 
-    public List<TomlElement<?>> getElements() {
+    private record NumberResult(Number number, int exponent, boolean hasExponent, int type){}
+
+    private NumberResult getNumber(String chars, int index) throws TomlParsingException {
+        if (chars.isEmpty()) {
+            return null;
+        }
+        if (index >= chars.length()) {
+            return null;
+        }
+        if (index < 0) {
+            throw new TomlParsingException("Index on getNumber negative");
+        }
+
+        // the first character must b
+
+        int i = index;
+        boolean dotPresent = false;
+        boolean numberAfter = false;
+        boolean hasExponent = false;
+
+        StringBuilder mainNumberString = new StringBuilder();
+        StringBuilder exponentString = new StringBuilder();
+
+
+        while (i < chars.length()) {
+
+            if (Character.isDigit(chars.codePointAt(i))) {
+                numberAfter = false;
+
+                if (hasExponent) {
+                    exponentString.append(chars.codePointAt(i));
+                } else {
+                    mainNumberString.append(chars.codePointAt(i));
+                }
+                i++;
+                continue;
+            }
+
+            if (chars.codePointAt(i) == '.') {
+                if (dotPresent) {
+                    throw new TomlParsingException("a number cannot contain two dots!");
+                }
+                dotPresent = true;
+                numberAfter = true;
+                mainNumberString.append(chars.codePointAt(i));
+                i++;
+                continue;
+            }
+
+            if (chars.codePointAt(i) == 'e' || chars.codePointAt(i) == 'E') {
+                if (numberAfter) {
+                    throw new TomlParsingException("TOML requires a number after a dot or exponent");
+                }
+
+                // exponent
+                numberAfter = true;
+                hasExponent = true;
+                i++;
+
+            }
+
+        }
+
+        if (numberAfter) {
+            throw new TomlParsingException("TOML requires a number after a dot or exponent");
+        }
+
+        int exponent = 0;
+
+        if (hasExponent) {
+            exponent = Integer.parseInt(exponentString.toString());
+        }
+
+        if (dotPresent) {
+            return new NumberResult(Double.parseDouble(mainNumberString.toString()), exponent, hasExponent, 1);
+        }
+
+        return new NumberResult(Integer.parseInt(mainNumberString.toString()), exponent, hasExponent, 0);
+
+    }
+
+    public List<TomlElement> getElements() {
         return elements;
     }
 

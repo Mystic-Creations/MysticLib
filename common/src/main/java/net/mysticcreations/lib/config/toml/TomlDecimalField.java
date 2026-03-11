@@ -1,33 +1,33 @@
 package net.mysticcreations.lib.config.toml;
 
-public class TomlIntegerField extends TomlField {
+public class TomlDecimalField extends TomlField {
 
-    public long value;
+    public double value;
     public long exponent;
     public boolean hasExponent;
 
-    public TomlIntegerField(String name, long value) {
+    public TomlDecimalField(String name, double value) {
         super(TomlDottedElementName.fromString(name));
         this.value = value;
         this.exponent = 0;
         this.hasExponent = false;
     }
 
-    public TomlIntegerField(TomlDottedElementName name, long value) {
+    public TomlDecimalField(TomlDottedElementName name, double value) {
         super(name);
         this.value = value;
         this.exponent = 0;
         this.hasExponent = false;
     }
 
-    public TomlIntegerField(String name, long value, long exponent) {
+    public TomlDecimalField(String name, double value, long exponent) {
         super(TomlDottedElementName.fromString(name));
         this.value = value;
         this.exponent = exponent;
         this.hasExponent = true;
     }
 
-    public TomlIntegerField(TomlDottedElementName name, long value, long exponent) {
+    public TomlDecimalField(TomlDottedElementName name, double value, long exponent) {
         super(name);
         this.value = value;
         this.exponent = exponent;
@@ -39,7 +39,7 @@ public class TomlIntegerField extends TomlField {
         this.hasExponent = true;
     }
 
-    public void setValue(long value) {
+    public void setValue(double value) {
         this.value = value;
     }
 

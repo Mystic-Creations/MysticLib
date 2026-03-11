@@ -16,15 +16,18 @@ public class ConfigInitializer {
     public static void initializeConfigDefinition(ConfigDefinition definition, boolean subfolder) {
         ConfigSerializer configSerializer = new ConfigSerializer(definition, subfolder);
         //configSerializer.readFromConfigFile();
-        // read from file if exists here otherwise write a blank one
         definitions.put(definition.id, configSerializer);
-
-        //TomlParser parser = new TomlParser(configSerializer.configFile);
     }
 
     public static void saveAllConfigs() {
         for (ConfigSerializer serializer : definitions.values()) {
             serializer.writeToConfigFile();
+        }
+    }
+
+    public static void loadAllConfigs() {
+        for (ConfigSerializer serializer : definitions.values()) {
+            serializer.readFromConfigFile();
         }
     }
 

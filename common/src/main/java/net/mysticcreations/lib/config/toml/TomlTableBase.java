@@ -1,6 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
-public abstract class TomlTableBase<T extends TomlTableBase<T>> extends TomlElement<T> {
+public abstract class TomlTableBase extends TomlElement {
 
     public TomlDottedElementName name;
 

@@ -1,8 +1,6 @@
 package net.mysticcreations.lib.config.toml;
 
-public class TomlBooleanField extends TomlField<TomlBooleanField> {
-
-
+public class TomlBooleanField extends TomlField {
     boolean value;
 
     public TomlBooleanField(String name, boolean value) {
@@ -15,14 +13,12 @@ public class TomlBooleanField extends TomlField<TomlBooleanField> {
         this.value = value;
     }
 
-    public TomlBooleanField setValue(boolean value) {
+    public void setValue(boolean value) {
         this.value = value;
-        return this;
     }
 
-    public TomlBooleanField toggle() {
+    public void toggle() {
         this.value = !this.value;
-        return this;
     }
 
     @Override

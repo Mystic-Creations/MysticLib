@@ -3,7 +3,7 @@ package net.mysticcreations.lib.config.toml;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class TomlElement<T extends TomlElement<T>> {
+public abstract class TomlElement {
 
     public String inlineComment;
     public List<String> headerComments;
@@ -13,23 +13,15 @@ public abstract class TomlElement<T extends TomlElement<T>> {
         this.headerComments = new ArrayList<>();
     }
 
-    @SuppressWarnings("unchecked")
-    protected T self() {
-        return (T) this;
-    }
-
-    public T setInlineComment(String comment) {
+    public void setInlineComment(String comment) {
         this.inlineComment = comment;
-        return self();
     }
 
-    public T setHeaderComments(List<String> headerComments) {
+    public void setHeaderComments(List<String> headerComments) {
         this.headerComments = headerComments;
-        return self();
     }
 
-    public T addHeaderComment(String comment) {
+    public void addHeaderComment(String comment) {
         this.headerComments.add(comment);
-        return self();
     }
 }

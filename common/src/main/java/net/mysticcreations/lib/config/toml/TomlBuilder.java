@@ -7,7 +7,7 @@ import java.util.Set;
 
 public class TomlBuilder {
 
-    private List<TomlElement<?>> elements;
+    private List<TomlElement> elements;
     private TomlBuilderOptions options;
 
 
@@ -16,17 +16,17 @@ public class TomlBuilder {
         this.options = options;
     }
 
-    public TomlBuilder addElement(TomlElement<?> element) {
+    public TomlBuilder addElement(TomlElement element) {
         this.elements.add(element);
         return this;
     }
 
     public String build() throws TomlParsingException {
         StringBuilder sb = new StringBuilder();
-        TomlTableBase<?> tomlTable = null;
+        TomlTableBase tomlTable = null;
         Set<TomlDottedElementName> tableNames = new HashSet<>();
 
-        for (TomlElement<?> element : this.elements) {
+        for (TomlElement element : this.elements) {
 
             if (element instanceof TomlTable) {
                 if (tableNames.contains(((TomlTable) element).name)) {
@@ -38,7 +38,7 @@ public class TomlBuilder {
                 if (!sb.isEmpty()) {
                     sb.append("\n");
                 }
-                tomlTable = (TomlTableBase<?>) element;
+                tomlTable = (TomlTableBase) element;
                 String indent = "";
 
                 // Header Comments

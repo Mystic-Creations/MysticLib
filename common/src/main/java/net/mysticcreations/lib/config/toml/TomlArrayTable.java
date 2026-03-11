@@ -3,11 +3,12 @@ package net.mysticcreations.lib.config.toml;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TomlArrayTable extends TomlTableBase<TomlArrayTable> {
+public class TomlArrayTable extends TomlTableBase {
 
     public TomlArrayTable(String name) {
         super(new TomlDottedElementName().addName(name, TomlStringType.DOUBLE));
     }
+
     public TomlArrayTable(TomlDottedElementName name) {
         super(name);
     }

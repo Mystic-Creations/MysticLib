@@ -23,7 +23,7 @@ public class ClientUtil {
         public static void registerFromSupplier(Iterable<Supplier<Block>> registry) {
             throw new AssertionError("ExpectPlatform method not implemented");
         }
-        private static Block[] getBlocks(Iterable<Supplier<Block>> registry) {
+        public static Block[] getBlocks(Iterable<Supplier<Block>> registry) {
             return Streams.stream(registry).map(Supplier::get).toArray(Block[]::new);
         }
     }

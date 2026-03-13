@@ -1,6 +1,5 @@
 package net.mysticcreations.lib.util;
 
-import net.justmili.leftforgotten.init.LFBlocks;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;

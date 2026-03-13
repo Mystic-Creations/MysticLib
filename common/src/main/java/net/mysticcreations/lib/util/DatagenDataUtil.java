@@ -11,6 +11,12 @@ import java.util.stream.Collectors;
 
 public class DatagenDataUtil {
     public static class Recipes {
+        /**
+         * EXAMPLE OF USE
+         * var Gen = new DatagenDataUtil.Recipes(MOD_ID, writer);
+         *
+         * Gen.Building.planksFromLogs(Items.OAK_LOG.get(), Items.OAK_PLANKS.get()); (will output 4 planks)
+         */
         private final String modId;
         private final Consumer<FinishedRecipe> writer;
 
@@ -40,7 +46,7 @@ public class DatagenDataUtil {
         }
 
         public class Building {
-            public void planks(Item log, Item planks) {
+            public void planksFromLogs(Item log, Item planks) {
                 ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, 4)
                     .requires(log)
                     .unlockedBy(RecipeProvider.getHasName(log), RecipeProvider.has(log))

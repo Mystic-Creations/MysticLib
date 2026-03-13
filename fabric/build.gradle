@@ -8,18 +8,8 @@ architectury {
 }
 
 fabricApi {
-    configureDataGeneration()
-}
-
-loom {
-    runs {
-        datagen {
-            server()
-            vmArg("-Dfabric-api.datagen")
-            vmArg("-Dfabric-api.datagen.output-dir=${file("src/main/generated")}")
-            vmArg("-Dfabric-api.datagen.modid=mysticlib")
-            vmArg("-Dporting_lib.datagen.existing_resources=${file("src/main/resources")}")
-        }
+    configureDataGeneration {
+        client = true
     }
 }
 

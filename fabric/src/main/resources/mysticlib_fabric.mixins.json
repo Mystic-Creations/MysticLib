@@ -1,12 +1,12 @@
 {
   "required": true,
-  "package": "net.mysticcreations.lib.mixin",
+  "package": "net.mysticcreations.lib.mixin.fabric",
   "compatibilityLevel": "JAVA_17",
   "minVersion": "0.8",
   "client": [
-    "DimSpecialEffectsAccessor"
   ],
   "mixins": [
+    "BlockLootSubProvider"
   ],
   "injectors": {
     "defaultRequire": 1

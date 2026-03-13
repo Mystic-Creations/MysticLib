@@ -7,23 +7,15 @@ import net.mysticcreations.lib.config.toml.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.File;
-import java.io.ObjectInputFilter;
-import java.util.List;
-
 public final class MysticLib {
     public static final Logger LOGGER = LogManager.getLogger(MysticLib.class);
     public static final String MODID = "mysticlib";
 
     public static void init() {
 
-
         // Write common init code here.
         ConfigInitializer.initializeConfigDefinition(new ExampleTomlConfig());
         ConfigInitializer.loadAllConfigs();
-
-
-
     }
 
     public static ResourceLocation asResource(String path) {

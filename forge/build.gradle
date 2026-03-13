@@ -8,7 +8,7 @@ loom {
     }
 }
 
-def generatedResources = file("src/generated/resources")
+def generatedResources = file("src/generated")
 
 sourceSets {
     main {
@@ -17,12 +17,16 @@ sourceSets {
 }
 
 loom {
+    forge {
+        mixinConfig "mysticlib.mixins.json",
+                "mysticlib_forge.mixins.json"
+    }
+
     runs {
         data {
             data()
             programArgs "--all", "--mod", "mysticlib"
             programArgs "--output", generatedResources.absolutePath
-            programArgs "--existing", file("src/main/resources").absolutePath
         }
     }
 }

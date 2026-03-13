@@ -34,4 +34,7 @@ public class CommandUtil {
     public static void broadcastTo(LevelAccessor world, String message, boolean bypassHiddenChat) {
         world.getServer().getPlayerList().broadcastSystemMessage(Component.literal(message), bypassHiddenChat);
     }
+    public static void broadcastTo(LevelAccessor world, String message) {
+        broadcastTo(world, message, false);
+    }
 }

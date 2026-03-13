@@ -228,6 +228,7 @@ public class TomlParser {
                 element.addName(result.character, result.type);
                 i += result.length();
                 shouldDotOrEnd = true;
+                trailingDot = false;
                 continue;
             }
 
@@ -242,6 +243,7 @@ public class TomlParser {
                 element.addName(result.character, TomlStringType.NO_QUOTE);
                 i += result.length;
                 shouldDotOrEnd = true;
+                trailingDot = false;
                 continue;
             }
 
@@ -308,7 +310,8 @@ public class TomlParser {
             }
         }
         StringBuilder string = new StringBuilder();
-        for (int i = index + 1; i < chars.length(); i++) {
+        int i = index+1;
+        while (i < chars.length()) {
 
             if (chars.codePointAt(i) == '\\') {
                 StringResult escape = getEscape(chars, i);
@@ -325,9 +328,10 @@ public class TomlParser {
                 break;
             }
 
-            string.append(chars.codePointAt(i));
+            string.append(Character.toString(chars.codePointAt(i)));
+            i++;
         }
-        return new StringFieldValueResult(string.toString(), index + 1, TomlStringType.DOUBLE);
+        return new StringFieldValueResult(string.toString(), string.length() + 2, TomlStringType.DOUBLE);
     }
 
     private StringResult getLiteralStringElement(String chars, int index) throws TomlParsingException {

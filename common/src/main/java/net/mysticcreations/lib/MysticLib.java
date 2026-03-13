@@ -21,4 +21,7 @@ public final class MysticLib {
     public static ResourceLocation asResource(String path) {
         return new ResourceLocation(MODID, path);
     }
+    public static ResourceLocation asExtResource(String modId, String path) {
+        return new ResourceLocation(modId, path);
+    }
 }

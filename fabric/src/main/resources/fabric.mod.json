@@ -21,7 +21,8 @@
     ]
   },
   "mixins": [
-    "mysticlib.mixins.json"
+    "mysticlib.mixins.json",
+    "mysticlib_fabric.mixins.json"
   ],
   "fabric-datagen": [
     "net.mysticcreations.lib.datagen.fabric.FabricDatagen"

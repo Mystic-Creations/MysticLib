@@ -146,6 +146,8 @@ public class ConfigSerializer {
                 } catch (TomlParsingException e) {
                     MysticLib.LOGGER.error("Error while parsing TOML of : {}", this.config.id.toString());
                     MysticLib.LOGGER.error(e);
+                    e.printStackTrace();
+
                 }
                 //applyTomlValuesToConfig(config, document, config.items, );
             }

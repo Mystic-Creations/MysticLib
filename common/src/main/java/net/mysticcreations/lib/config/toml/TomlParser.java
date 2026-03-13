@@ -93,10 +93,8 @@ public class TomlParser {
                     }
 
                     index += getTrailingWhitespace(tomlContent, index);
-
-                }
-                // Array Table
-                if (tomlContent.codePointAt(index) == '[') {
+                    MysticLib.LOGGER.error("fffff");
+                }else if (tomlContent.codePointAt(index) == '[') {
                     index += 1;
 
                     TomlDottedElementResult result = getDotSeparatedStringASCIElement(tomlContent, index);
@@ -196,7 +194,7 @@ public class TomlParser {
         }
         int whitespace = 0;
         for (int i = index; i < chars.length(); i++) {
-            if (Character.isWhitespace(chars.codePointAt(i)) && i != '\n') {
+            if (Character.isWhitespace(chars.codePointAt(i)) && chars.codePointAt(i) != '\n') {
                 whitespace += 1;
             } else {
                 break;

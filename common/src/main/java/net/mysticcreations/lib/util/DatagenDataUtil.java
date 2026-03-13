@@ -35,7 +35,7 @@ public class DatagenDataUtil {
                 ShapelessRecipeBuilder builder = ShapelessRecipeBuilder.shapeless(category, output, count);
                 for (Item input : inputs) builder.requires(input);
                 String inputNames = Arrays.stream(inputs)
-                    .map(i -> RecipeProvider.getItemName(i))
+                    .map(RecipeProvider::getItemName)
                     .collect(Collectors.joining("_and_"));
                 builder.unlockedBy(RecipeProvider.getHasName(inputs[0]), RecipeProvider.has(inputs[0]))
                     .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output) + "_from_" + inputNames));

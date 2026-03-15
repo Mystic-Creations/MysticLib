@@ -50,42 +50,42 @@ public class DatagenDataUtil {
                 ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, planks, 4)
                     .requires(log)
                     .unlockedBy(RecipeProvider.getHasName(log), RecipeProvider.has(log))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(planks)));
             }
             public void stairs(Item material, Item stairs) {
                 RecipeProvider.stairBuilder(stairs, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(stairs)));
             }
             public void slab(Item material, Item slab) {
                 RecipeProvider.slabBuilder(RecipeCategory.BUILDING_BLOCKS, slab, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(slab)));
             }
             public void fence(Item material, Item fence) {
                 RecipeProvider.fenceBuilder(fence, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(fence)));
             }
             public void fenceGate(Item material, Item fenceGate) {
                 RecipeProvider.fenceGateBuilder(fenceGate, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(fenceGate)));
             }
             public void door(Item material, Item door) {
                 RecipeProvider.doorBuilder(door, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(door)));
             }
             public void trapdoor(Item material, Item trapdoor) {
                 RecipeProvider.trapdoorBuilder(trapdoor, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(trapdoor)));
             }
             public void wall(Item material, Item wall) {
                 RecipeProvider.wallBuilder(RecipeCategory.BUILDING_BLOCKS, wall, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(wall)));
             }
             public void bars(Item material, Item bars) {
                 ShapedRecipeBuilder.shaped(RecipeCategory.DECORATIONS, bars, 16)
@@ -93,7 +93,7 @@ public class DatagenDataUtil {
                     .pattern("###")
                     .pattern("###")
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(bars)));
             }
         }
 
@@ -101,13 +101,13 @@ public class DatagenDataUtil {
             public void pressurePlate(Item material, Item pressurePlate) {
                 RecipeProvider.pressurePlateBuilder(RecipeCategory.REDSTONE, pressurePlate, Ingredient.of(material))
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(pressurePlate)));
             }
             public void button(Item material, Item button) {
                 ShapelessRecipeBuilder.shapeless(RecipeCategory.REDSTONE, button)
                     .requires(material)
                     .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
-                    .save(writer);
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(button)));
             }
         }
 
@@ -115,7 +115,7 @@ public class DatagenDataUtil {
             public void smelt(Item input, Item output, float exp, int cookingTime) {
                 SimpleCookingRecipeBuilder.smelting(Ingredient.of(input), RecipeCategory.MISC, output, exp, cookingTime)
                     .unlockedBy(RecipeProvider.getHasName(input), RecipeProvider.has(input))
-                    .save(writer, RecipeProvider.getConversionRecipeName(output, input) + "_smelting");
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output) + "_from_" + RecipeProvider.getItemName(input) + "_smelting"));
             }
             public void smelt(Item input, Item output, float exp) {
                 smelt(input, output, exp, 200);
@@ -123,7 +123,7 @@ public class DatagenDataUtil {
             public void blast(Item input, Item output, float exp, int cookingTime) {
                 SimpleCookingRecipeBuilder.blasting(Ingredient.of(input), RecipeCategory.MISC, output, exp, cookingTime)
                     .unlockedBy(RecipeProvider.getHasName(input), RecipeProvider.has(input))
-                    .save(writer, RecipeProvider.getConversionRecipeName(output, input) + "_blasting");
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output) + "_from_" + RecipeProvider.getItemName(input) + "_blasting"));
             }
             public void blast(Item input, Item output, float exp) {
                 blast(input, output, exp, 100);
@@ -131,7 +131,7 @@ public class DatagenDataUtil {
             public void smoke(Item input, Item output, float exp, int cookingTime) {
                 SimpleCookingRecipeBuilder.smoking(Ingredient.of(input), RecipeCategory.MISC, output, exp, cookingTime)
                     .unlockedBy(RecipeProvider.getHasName(input), RecipeProvider.has(input))
-                    .save(writer, RecipeProvider.getConversionRecipeName(output, input) + "_smoking");
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output) + "_from_" + RecipeProvider.getItemName(input) + "_smoking"));
             }
             public void smoke(Item input, Item output, float exp) {
                 smoke(input, output, exp, 100);
@@ -139,7 +139,7 @@ public class DatagenDataUtil {
             public void cut(Item input, Item output, int resultCount) {
                 SingleItemRecipeBuilder.stonecutting(Ingredient.of(input), RecipeCategory.BUILDING_BLOCKS, output, resultCount)
                     .unlockedBy(RecipeProvider.getHasName(input), RecipeProvider.has(input))
-                    .save(writer, RecipeProvider.getConversionRecipeName(output, input) + "_stonecutting");
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output) + "_from_" + RecipeProvider.getItemName(input) + "_stonecutting"));
             }
             public void cut(Item input, Item output) {
                 cut(input, output, 1);
@@ -147,7 +147,7 @@ public class DatagenDataUtil {
             public void smithing(Item base, Item addition, Item template, RecipeCategory category, Item result) {
                 SmithingTransformRecipeBuilder.smithing(Ingredient.of(template), Ingredient.of(base), Ingredient.of(addition), category, result)
                     .unlocks(RecipeProvider.getHasName(addition), RecipeProvider.has(addition))
-                    .save(writer, RecipeProvider.getConversionRecipeName(result, base) + "_smithing");
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(result) + "_from_" + RecipeProvider.getItemName(base) + "_smithing"));
             }
         }
     }

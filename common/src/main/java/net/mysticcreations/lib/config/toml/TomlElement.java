@@ -5,6 +5,8 @@ import java.util.List;
 
 public abstract class TomlElement {
 
+    public TomlDottedElementName name;
+
     public String inlineComment;
     public List<String> headerComments;
 

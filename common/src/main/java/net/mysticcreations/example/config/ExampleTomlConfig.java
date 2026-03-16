@@ -56,8 +56,8 @@ public class ExampleTomlConfig extends ConfigDefinition {
     }
     public IntegerField exampleInteger = new IntegerField("example_int",25, 0, 100);
     public IntegerField exampleInteger1 = new IntegerField("example_int_1",25, 0, 100, 1);
-    public LongField exampleLong = new LongField("example_long", 16L, 8L, 255L);
-    public LongField exampleLong1 = new LongField("example_long_1",32L, 8L, 255L, 2L);
+    public IntegerField exampleLong = new IntegerField("example_long", 16L, 8L, 255L);
+    public IntegerField exampleLong1 = new IntegerField("example_long_1",32L, 8L, 255L, 2L);
 
     public DoubleField exampleDouble = new DoubleField("example_double",16.0, 8.0, 255.0);
     public DoubleField exampleDouble1 = new DoubleField("example_double_1",32.0, 8.0, 255.0, 0.5);

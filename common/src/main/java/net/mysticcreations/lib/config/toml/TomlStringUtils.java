@@ -35,4 +35,12 @@ public class TomlStringUtils {
     public static String getCharacterString(int codePoint) {
         return new String(Character.toChars(codePoint));
     }
+
+    public static TomlStringType getPreferredStringType(String string) {
+        if (isNoQuoteStringValid(string)) {
+            return TomlStringType.NO_QUOTE;
+        } else {
+            return TomlStringType.DOUBLE;
+        }
+    }
 }

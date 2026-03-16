@@ -2,7 +2,6 @@ package net.mysticcreations.lib.config.toml;
 
 public abstract class TomlTableBase extends TomlElement {
 
-    public TomlDottedElementName name;
 
     public TomlTableBase(TomlDottedElementName name) {
         this.name = name;

@@ -31,8 +31,8 @@ public class DatagenDataUtil {
         }
 
         public class Crafting {
-            public void shapeless(RecipeCategory category, Item output, int count, Item... inputs) {
-                ShapelessRecipeBuilder builder = ShapelessRecipeBuilder.shapeless(category, output, count);
+            public void shapeless(RecipeCategory category, Item output, int outCount, Item... inputs) {
+                ShapelessRecipeBuilder builder = ShapelessRecipeBuilder.shapeless(category, output, outCount);
                 for (Item input : inputs) builder.requires(input);
                 String inputNames = Arrays.stream(inputs)
                     .map(RecipeProvider::getItemName)
@@ -42,6 +42,23 @@ public class DatagenDataUtil {
             }
             public void shapeless(RecipeCategory category, Item output, Item... inputs) {
                 shapeless(category, output, 1, inputs);
+            }
+            public void shaped2x2(RecipeCategory category, Item material, Item output, int outCount) {
+                ShapedRecipeBuilder.shaped(category, output, outCount)
+                    .define('#', material)
+                    .pattern("##")
+                    .pattern("##")
+                    .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output)));
+            }
+            public void shaped3x3(RecipeCategory category, Item material, Item output, int outCount) {
+                ShapedRecipeBuilder.shaped(category, output, outCount)
+                    .define('#', material)
+                    .pattern("###")
+                    .pattern("###")
+                    .pattern("###")
+                    .unlockedBy(RecipeProvider.getHasName(material), RecipeProvider.has(material))
+                    .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output)));
             }
         }
 
@@ -136,8 +153,8 @@ public class DatagenDataUtil {
             public void smoke(Item input, Item output, float exp) {
                 smoke(input, output, exp, 100);
             }
-            public void cut(Item input, Item output, int resultCount) {
-                SingleItemRecipeBuilder.stonecutting(Ingredient.of(input), RecipeCategory.BUILDING_BLOCKS, output, resultCount)
+            public void cut(Item input, Item output, int outCount) {
+                SingleItemRecipeBuilder.stonecutting(Ingredient.of(input), RecipeCategory.BUILDING_BLOCKS, output, outCount)
                     .unlockedBy(RecipeProvider.getHasName(input), RecipeProvider.has(input))
                     .save(writer, MysticLib.asExtResource(modId, RecipeProvider.getItemName(output) + "_from_" + RecipeProvider.getItemName(input) + "_stonecutting"));
             }

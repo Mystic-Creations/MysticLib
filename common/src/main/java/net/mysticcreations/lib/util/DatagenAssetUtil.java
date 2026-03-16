@@ -1,8 +1,12 @@
 package net.mysticcreations.lib.util;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import net.minecraft.core.Direction;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.*;
@@ -11,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.jetbrains.annotations.Nullable;
 
 public class DatagenAssetUtil {
     public static class BlockModels {
@@ -113,6 +118,10 @@ public class DatagenAssetUtil {
         }
 
         public static class Individual {
+            /**
+             * Individual
+             * Cubes
+             */
             public static void createCubeAll(BlockModelGenerators blockGen, Block block) {
                 blockGen.createTrivialCube(block);
             }
@@ -136,7 +145,6 @@ public class DatagenAssetUtil {
                         blockGen.blockStateOutput.accept(BlockModelGenerators.createAxisAlignedPillarBlock(block, model));
                 }
             }
-
             public enum RotationType {
                 NONE,
                 HORIZONTAL_Y, // S/W/N/E y-axis
@@ -144,6 +152,27 @@ public class DatagenAssetUtil {
                 LOG_XYZ // Log XYZ axis
             }
 
+            /**
+             * Individual
+             * Magic or whatever
+             * Portals
+             */
+            public static void createNetherPortal(BlockModelGenerators blockGen, Block block) {
+                blockGen.blockStateOutput.accept(
+                    MultiVariantGenerator.multiVariant(block)
+                        .with(PropertyDispatch.property(BlockStateProperties.HORIZONTAL_AXIS)
+                            .select(Direction.Axis.X, Variant.variant()
+                                .with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(block, "_ns")))
+                            .select(Direction.Axis.Z, Variant.variant()
+                                .with(VariantProperties.MODEL, ModelLocationUtils.getModelLocation(block, "_ew")))
+                        )
+                );
+            }
+
+            /**
+             * Individual
+             * Nature
+             */
             public static void createFarmland(BlockModelGenerators blockGen, Block blockForTopFace, Block blockForDirt) {
                 TextureMapping dry = new TextureMapping()
                     .put(TextureSlot.DIRT, TextureMapping.getBlockTexture(blockForDirt))
@@ -157,6 +186,63 @@ public class DatagenAssetUtil {
                 blockGen.blockStateOutput.accept(MultiVariantGenerator.multiVariant(blockForTopFace)
                     .with(BlockModelGenerators.createEmptyOrFullDispatch(
                         BlockStateProperties.MOISTURE, 7, moistModel, dryModel)));
+            }
+
+            public static void createCactus(BlockModelGenerators blockGen, Block block) {
+                ResourceLocation sideTexture = TextureMapping.getBlockTexture(block, "_side");
+                ResourceLocation bottomTexture = TextureMapping.getBlockTexture(block, "_bottom");
+                ResourceLocation topTexture = TextureMapping.getBlockTexture(block, "_top");
+
+                ResourceLocation modelLocation = ModelLocationUtils.getModelLocation(block);
+
+                blockGen.modelOutput.accept(modelLocation, () -> {
+                    JsonObject root = new JsonObject();
+                    root.addProperty("parent", "block/block");
+
+                    JsonObject textures = new JsonObject();
+                    textures.addProperty("particle", sideTexture.toString());
+                    textures.addProperty("bottom", bottomTexture.toString());
+                    textures.addProperty("top", topTexture.toString());
+                    textures.addProperty("side", sideTexture.toString());
+                    root.add("textures", textures);
+
+                    JsonArray elements = new JsonArray();
+
+                    // Top and bottom faces
+                    JsonObject el1 = new JsonObject();
+                    el1.add("from", toJsonArray(0, 0, 0));
+                    el1.add("to", toJsonArray(16, 16, 16));
+                    JsonObject faces1 = new JsonObject();
+                    faces1.add("down", face("0 0 16 16", "#bottom", "down"));
+                    faces1.add("up",   face("0 0 16 16", "#top",    "up"));
+                    el1.add("faces", faces1);
+                    elements.add(el1);
+
+                    // North/south faces
+                    JsonObject el2 = new JsonObject();
+                    el2.add("from", toJsonArray(0, 0, 1));
+                    el2.add("to", toJsonArray(16, 16, 15));
+                    JsonObject faces2 = new JsonObject();
+                    faces2.add("north", face("0 0 16 16", "#side", null));
+                    faces2.add("south", face("0 0 16 16", "#side", null));
+                    el2.add("faces", faces2);
+                    elements.add(el2);
+
+                    // West/east faces
+                    JsonObject el3 = new JsonObject();
+                    el3.add("from", toJsonArray(1, 0, 0));
+                    el3.add("to", toJsonArray(15, 16, 16));
+                    JsonObject faces3 = new JsonObject();
+                    faces3.add("west", face("0 0 16 16", "#side", null));
+                    faces3.add("east", face("0 0 16 16", "#side", null));
+                    el3.add("faces", faces3);
+                    elements.add(el3);
+
+                    root.add("elements", elements);
+                    return root;
+                });
+
+                blockGen.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(block, modelLocation));
             }
 
             public static void createPlant(BlockModelGenerators blockGen, Block block, BlockModelGenerators.TintState tintState) {
@@ -199,5 +285,23 @@ public class DatagenAssetUtil {
         public static void createFlatBlockItem(ItemModelGenerators itemGen, Block block) {
             itemGen.generateFlatItem(Item.BY_BLOCK.get(block), ModelTemplates.FLAT_ITEM);
         }
+    }
+
+    /// Generation helpers
+    private static JsonArray toJsonArray(int x, int y, int z) {
+        JsonArray arr = new JsonArray();
+        arr.add(x); arr.add(y); arr.add(z);
+        return arr;
+    }
+
+    private static JsonObject face(String uv, String texture, @Nullable String cullface) {
+        JsonObject face = new JsonObject();
+        String[] parts = uv.split(" ");
+        JsonArray uvArr = new JsonArray();
+        for (String p : parts) uvArr.add(Integer.parseInt(p));
+        face.add("uv", uvArr);
+        face.addProperty("texture", texture);
+        if (cullface != null) face.addProperty("cullface", cullface);
+        return face;
     }
 }

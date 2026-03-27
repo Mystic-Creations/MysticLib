@@ -14,6 +14,7 @@ import net.mysticcreations.lib.config.toml.TomlElement;
 import net.mysticcreations.lib.config.toml.TomlParser;
 import net.mysticcreations.lib.config.toml.TomlParsingException;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,7 +27,9 @@ public class ConfigScreenNetwork {
     public static void registerPackets() {
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, SEND_CONFIG_SCREEN_PACKET, (buf, context) -> {
             // Logic
-            String tomlString = buf.readUtf();
+            byte[] bytes = new byte[buf.readableBytes()];
+            buf.readBytes(bytes);
+            String tomlString = new String(bytes, StandardCharsets.UTF_8);
 
             MysticLib.LOGGER.info("UwU");
             try {

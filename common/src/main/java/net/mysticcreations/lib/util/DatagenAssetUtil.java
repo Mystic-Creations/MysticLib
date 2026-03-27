@@ -14,8 +14,12 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.ChestType;
 import net.minecraft.world.level.block.state.properties.Property;
+import net.mysticcreations.lib.MysticLib;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Optional;
 
 public class DatagenAssetUtil {
     public static class BlockModels {
@@ -153,6 +157,90 @@ public class DatagenAssetUtil {
             }
 
             /**
+             * Functional block templates
+             */
+            public static void createCraftingTable(BlockModelGenerators blockGen, Block table, Block bottomTexture) {
+                TextureMapping mapping = new TextureMapping()
+                    .put(TextureSlot.PARTICLE, TextureMapping.getBlockTexture(table, "_front"))
+                    .put(TextureSlot.DOWN, TextureMapping.getBlockTexture(bottomTexture))
+                    .put(TextureSlot.UP, TextureMapping.getBlockTexture(table, "_top"))
+                    .put(TextureSlot.NORTH, TextureMapping.getBlockTexture(table, "_front"))
+                    .put(TextureSlot.EAST, TextureMapping.getBlockTexture(table, "_side"))
+                    .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(table, "_front"))
+                    .put(TextureSlot.WEST, TextureMapping.getBlockTexture(table, "_side"));
+
+                ResourceLocation model = ModelTemplates.CUBE.create(table, mapping, blockGen.modelOutput);
+                blockGen.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(table, model));
+                blockGen.delegateItemModel(table, model);
+            }
+
+            public static void createFurnace(BlockModelGenerators blockGen, Block block) {
+                TextureMapping unlitMapping = new TextureMapping()
+                    .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                    .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front"))
+                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"));
+                TextureMapping litMapping = new TextureMapping()
+                    .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                    .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front_on"))
+                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"));
+
+                ResourceLocation unlitModel = ModelTemplates.CUBE_ORIENTABLE.create(block, unlitMapping, blockGen.modelOutput);
+                ResourceLocation litModel = ModelTemplates.CUBE_ORIENTABLE.create(
+                    TextureMapping.getBlockTexture(block, "_on"), litMapping, blockGen.modelOutput);
+
+                blockGen.blockStateOutput.accept(
+                    MultiVariantGenerator.multiVariant(block)
+                        .with(BlockModelGenerators.createHorizontalFacingDispatch())
+                        .with(PropertyDispatch.property(BlockStateProperties.LIT)
+                            .select(false, Variant.variant().with(VariantProperties.MODEL, unlitModel))
+                            .select(true, Variant.variant().with(VariantProperties.MODEL, litModel)))
+                );
+
+                blockGen.delegateItemModel(block, unlitModel);
+            }
+
+            public static void createChest(BlockModelGenerators blockGen, Block block) {
+                TextureMapping singleMapping = new TextureMapping()
+                    .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
+                    .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front"));
+
+                TextureMapping leftMapping = new TextureMapping()
+                    .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
+                    .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front_right")) // no this is not an error, this is correct
+                    .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_back_right"));
+
+                TextureMapping rightMapping = new TextureMapping()
+                    .put(TextureSlot.SIDE, TextureMapping.getBlockTexture(block, "_side"))
+                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(block, "_top"))
+                    .put(TextureSlot.FRONT, TextureMapping.getBlockTexture(block, "_front_left"))
+                    .put(TextureSlot.SOUTH, TextureMapping.getBlockTexture(block, "_back_left"));
+
+                ModelTemplate customBackOrientable = new ModelTemplate(Optional.of(MysticLib.asMcResource("block/orientable")), Optional.empty(), TextureSlot.TOP, TextureSlot.FRONT, TextureSlot.SIDE, TextureSlot.SOUTH);
+
+                ResourceLocation singleModel = ModelTemplates.CUBE_ORIENTABLE.create(block, singleMapping, blockGen.modelOutput);
+                ResourceLocation leftModel = customBackOrientable.create(TextureMapping.getBlockTexture(block, "_left"), leftMapping, blockGen.modelOutput);
+                ResourceLocation rightModel = customBackOrientable.create(TextureMapping.getBlockTexture(block, "_right"), rightMapping, blockGen.modelOutput);
+
+                blockGen.blockStateOutput.accept(
+                    MultiVariantGenerator.multiVariant(block)
+                        .with(BlockModelGenerators.createHorizontalFacingDispatch())
+                        .with(PropertyDispatch.property(BlockStateProperties.WATERLOGGED)
+                            .select(false, Variant.variant())
+                            .select(true, Variant.variant())
+                        )
+                        .with(PropertyDispatch.property(BlockStateProperties.CHEST_TYPE)
+                            .select(ChestType.SINGLE, Variant.variant().with(VariantProperties.MODEL, singleModel))
+                            .select(ChestType.LEFT, Variant.variant().with(VariantProperties.MODEL, leftModel))
+                            .select(ChestType.RIGHT, Variant.variant().with(VariantProperties.MODEL, rightModel))
+                        )
+                );
+
+                blockGen.delegateItemModel(block, singleModel);
+            }
+
+            /**
              * Individual
              * Magic or whatever
              * Portals
@@ -173,17 +261,17 @@ public class DatagenAssetUtil {
              * Individual
              * Nature
              */
-            public static void createFarmland(BlockModelGenerators blockGen, Block blockForTopFace, Block blockForDirt) {
+            public static void createFarmland(BlockModelGenerators blockGen, Block topTexture, Block wraptexture) {
                 TextureMapping dry = new TextureMapping()
-                    .put(TextureSlot.DIRT, TextureMapping.getBlockTexture(blockForDirt))
-                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(blockForTopFace));
+                    .put(TextureSlot.DIRT, TextureMapping.getBlockTexture(wraptexture))
+                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(topTexture));
                 TextureMapping moist = new TextureMapping()
-                    .put(TextureSlot.DIRT, TextureMapping.getBlockTexture(blockForDirt))
-                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(blockForTopFace, "_moist"));
-                ResourceLocation dryModel = ModelTemplates.FARMLAND.create(blockForTopFace, dry, blockGen.modelOutput);
+                    .put(TextureSlot.DIRT, TextureMapping.getBlockTexture(wraptexture))
+                    .put(TextureSlot.TOP, TextureMapping.getBlockTexture(topTexture, "_moist"));
+                ResourceLocation dryModel = ModelTemplates.FARMLAND.create(topTexture, dry, blockGen.modelOutput);
                 ResourceLocation moistModel = ModelTemplates.FARMLAND.create(
-                    TextureMapping.getBlockTexture(blockForTopFace, "_moist"), moist, blockGen.modelOutput);
-                blockGen.blockStateOutput.accept(MultiVariantGenerator.multiVariant(blockForTopFace)
+                    TextureMapping.getBlockTexture(topTexture, "_moist"), moist, blockGen.modelOutput);
+                blockGen.blockStateOutput.accept(MultiVariantGenerator.multiVariant(topTexture)
                     .with(BlockModelGenerators.createEmptyOrFullDispatch(
                         BlockStateProperties.MOISTURE, 7, moistModel, dryModel)));
             }

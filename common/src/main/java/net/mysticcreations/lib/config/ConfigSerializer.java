@@ -11,7 +11,7 @@ import java.util.*;
 
 public class ConfigSerializer {
 
-    private ConfigDefinition config;
+    public ConfigDefinition config;
     public File configFile;
 
     public ConfigSerializer(ConfigDefinition config, boolean subfolder) {
@@ -69,6 +69,18 @@ public class ConfigSerializer {
                 // do stuff
             }
         }
+    }
+
+    public String getPacketString() throws TomlParsingException {
+        TomlBuilderOptions options = new TomlBuilderOptions()
+                .indentAmount(0)
+                .indentTables(false);
+
+        TomlBuilder builder = new TomlBuilder(options);
+
+        convertConfigListToToml(builder, config.items, new ArrayList<>());
+
+        return builder.build();
     }
 
     public void convertConfigListToToml(TomlBuilder builder, List<ConfigItem> configList, ArrayList<String> prefix) {
@@ -249,7 +261,6 @@ public class ConfigSerializer {
                     e.printStackTrace();
 
                 }
-                //applyTomlValuesToConfig(config, document, config.items, );
             }
             case JSON -> {
                 // do stuff

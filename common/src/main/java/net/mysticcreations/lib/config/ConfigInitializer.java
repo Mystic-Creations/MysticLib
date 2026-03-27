@@ -7,7 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ConfigInitializer {
-    private static Map<ResourceLocation, ConfigSerializer> definitions = new HashMap<>();
+    static Map<ResourceLocation, ConfigSerializer> definitions = new HashMap<>();
 
     public static void initializeConfigDefinition(ConfigDefinition definition) {
         initializeConfigDefinition(definition, true);

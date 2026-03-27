@@ -17,7 +17,7 @@ public class TomlDottedElementName {
 
             switch (type) {
                 case DOUBLE -> {
-                    builder.append("\"").append(TomlStringUtils.escapeTomlString(item)).append("\"");
+                    builder.append('"').append(TomlStringUtils.escapeTomlString(item)).append('"');
                 }
                 case NO_QUOTE -> {
                     builder.append(item);

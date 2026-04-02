@@ -11,7 +11,14 @@ import org.apache.logging.log4j.Logger;
 public final class MysticLib {
     public static final Logger LOGGER = LogManager.getLogger(MysticLib.class);
     public static final String MOD_ID = "mysticlib";
-    public static final LibraryContext Lib = new LibraryContext(MOD_ID);
+
+    private static String registeredId = "minecraft";
+    public MysticLib(String modId) {
+        registeredId = modId;
+    }
+    public static LibraryContext getHooked() {
+        return new LibraryContext(registeredId);
+    }
 
     public static void init() {
         ConfigCommand.register();

@@ -17,7 +17,7 @@ It is cross-loader, and multi-version but only for loaders and versions we devel
 
 ## Developing with MysticLib
 MysticLib has a wide documentation on how to set it up and how to work with it.<br>
-https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS.md
+https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-SETUP.md
 <br><br>
 If you feel like MysticLib is missing documentation in some of its areas,
 feel free to suggest further documentation of the less documented area on the mod's issues page on GitHub.

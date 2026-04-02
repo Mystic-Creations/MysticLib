@@ -2,7 +2,10 @@
 
 <hr>
 
-Documentation Map - [Gradle Setup](#gradle-setup---repositories), [Hooking It Up](#java---hooking-up-the-library)
+Documentation Map - [Gradle Setup](#gradle-setup---repositories), [In-Mod Setup](#java---setup),
+[Config Library](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-CONFIG.md),
+[Variable Manager](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-VARIABLES.md),
+[Util Classes](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-UTIL.md)
 
 <hr>
 
@@ -85,12 +88,19 @@ implementation("maven.modrinth:mysticlib:LIB_VERSION")
 </details>
 
 Replace `LIB_VERSION` with the desired release version found on Modrinth.<br>
-*On Architectury Loom each subproject build.gradle requires its own modImplementation
+> On Architectury Loom each subproject build.gradle requires its own modImplementation
 
 <hr>
 
-## Java - Hooking Up The Library
-In your main mod class
+## Java - Setup
+MysticLib needs to know your mod's ID for some util classes and methods.<br>
+Add this to your main mod class:
+
+```java
+public static final MysticLib Hook = new MysticLib("your_mod_id");
+```
+> In an Architectury Loom project put it in the common init class
+
 
 
 Note from Millie: this documentation is very not finished

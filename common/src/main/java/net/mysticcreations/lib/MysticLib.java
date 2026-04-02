@@ -11,6 +11,7 @@ import org.apache.logging.log4j.Logger;
 public final class MysticLib {
     public static final Logger LOGGER = LogManager.getLogger(MysticLib.class);
     public static final String MOD_ID = "mysticlib";
+    public static final LibraryContext Lib = new LibraryContext(MOD_ID);
 
     public static void init() {
         ConfigCommand.register();

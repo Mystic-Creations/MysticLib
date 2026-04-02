@@ -64,11 +64,11 @@ public class EntityUtil {
     }
     public static boolean hasAdvancement(ServerPlayer player, String AdvancementID) {
         return player.getAdvancements().getOrStartProgress(
-            player.server.getAdvancements().getAdvancement(LibraryContext.asModResource(AdvancementID))
+            player.server.getAdvancements().getAdvancement(MysticLib.Lib.asResource(AdvancementID))
         ).isDone();
     }
     public static void grantAdvancement(ServerPlayer player, String AdvancementID) {
-        Advancement advancement = player.server.getAdvancements().getAdvancement(LibraryContext.asModResource(AdvancementID));
+        Advancement advancement = player.server.getAdvancements().getAdvancement(MysticLib.Lib.asResource(AdvancementID));
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
         if (!progress.isDone()) {
             for (String criteria : progress.getRemainingCriteria())

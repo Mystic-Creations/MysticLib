@@ -15,6 +15,7 @@ import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.mysticcreations.lib.LibraryContext;
 import net.mysticcreations.lib.MysticLib;
 
 import java.util.List;
@@ -63,11 +64,11 @@ public class EntityUtil {
     }
     public static boolean hasAdvancement(ServerPlayer player, String AdvancementID) {
         return player.getAdvancements().getOrStartProgress(
-            player.server.getAdvancements().getAdvancement(MysticLib.asModResource(modId, AdvancementID))
+            player.server.getAdvancements().getAdvancement(LibraryContext.asModResource(AdvancementID))
         ).isDone();
     }
     public static void grantAdvancement(ServerPlayer player, String AdvancementID) {
-        Advancement advancement = player.server.getAdvancements().getAdvancement(MysticLib.asModResource(modId, AdvancementID));
+        Advancement advancement = player.server.getAdvancements().getAdvancement(LibraryContext.asModResource(AdvancementID));
         AdvancementProgress progress = player.getAdvancements().getOrStartProgress(advancement);
         if (!progress.isDone()) {
             for (String criteria : progress.getRemainingCriteria())

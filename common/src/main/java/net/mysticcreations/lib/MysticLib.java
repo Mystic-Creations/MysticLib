@@ -26,5 +26,4 @@ public final class MysticLib {
     public static ResourceLocation asFabricResource(String path) { return new ResourceLocation("fabric", path); }
     public static ResourceLocation asForgeResource(String path) { return new ResourceLocation("forge", path); }
     public static ResourceLocation asNeoResource(String path) { return new ResourceLocation("neoforge", path); }
-    public static ResourceLocation asModResource(String modId, String path) { return new ResourceLocation(modId, path); }
 }

@@ -4,10 +4,6 @@
 
 <hr>
 
-***GitHub Notice: This is a `Repository Information` branch. If you wish to see the code, please change to a different branch.***
-
-<hr>
-
 ## Description
 MysticLib is a library mod for all most used code in projects by Mystic Creations Team.
 <br><br>
@@ -19,5 +15,5 @@ It is cross-loader, and multi-version but only for loaders and versions we devel
 MysticLib has a wide documentation on how to set it up and how to work with it.<br>
 https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS.md
 <br><br>
-If you feel like MysticLib is missing documentation in some of its areas,
+If you feel like MysticLib is missing documentation in some of its areas, 
 feel free to suggest further documentation of the less documented area on the mod's issues page on GitHub.

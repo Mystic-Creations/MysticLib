@@ -1,4 +1,4 @@
 eetgeenappels - TOML Parser, Config Lib
-JustMili - Command Utils, Attribute Utils, Fabric Data Attachments API Utils
+JustMili - Util classes
 
 *dev note: add to this as you develop more things

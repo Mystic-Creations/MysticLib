@@ -5,6 +5,11 @@
 <hr>
 
 ***GitHub Notice: This is a `Repository Information` branch. If you wish to see the code, please change to a different branch.***
+Documentation Map - [Gradle Setup](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-SETUP.md#gradle-setup---repositories),
+[In-Mod Setup](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-SETUP.md#java---setup),
+[Config Library](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-CONFIG.md),
+[Variable Manager](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-VARIABLES.md),
+[Util Classes](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-UTIL.md)
 
 <hr>
 

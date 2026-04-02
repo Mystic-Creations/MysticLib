@@ -4,6 +4,7 @@ import com.google.common.collect.Streams;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -18,6 +19,7 @@ public class ClientUtil {
             DimSpecialEffectsAccessor.getEffects().put(effectsId, effectsClass);
         }
     }
+
     public static class BlockTransparency {
         @ExpectPlatform
         public static void registerFromSupplier(Iterable<Supplier<Block>> registry) {
@@ -26,5 +28,9 @@ public class ClientUtil {
         public static Block[] getBlocks(Iterable<Supplier<Block>> registry) {
             return Streams.stream(registry).map(Supplier::get).toArray(Block[]::new);
         }
+    }
+
+    public static Minecraft instance() {
+        return Minecraft.getInstance();
     }
 }

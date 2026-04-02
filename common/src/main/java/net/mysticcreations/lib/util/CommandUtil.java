@@ -3,7 +3,10 @@ package net.mysticcreations.lib.util;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LevelAccessor;
 
 public class CommandUtil {
@@ -38,5 +41,13 @@ public class CommandUtil {
     }
     public static void broadcastTo(LevelAccessor world, String message) {
         broadcastTo(world, message, false);
+    }
+
+    // Other
+    public static void executeAsPlayer(ServerPlayer player, String command) {
+        if (player != null) player.getServer().getCommands().performPrefixedCommand(player.createCommandSourceStack().withSuppressedOutput(), command);
+    }
+    public static void executeAsServer(MinecraftServer server, String command) {
+        if (server != null) server.getCommands().performPrefixedCommand(server.createCommandSourceStack(), command);
     }
 }

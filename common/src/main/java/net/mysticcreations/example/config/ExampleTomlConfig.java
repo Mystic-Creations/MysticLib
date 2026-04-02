@@ -8,7 +8,7 @@ import net.mysticcreations.lib.config.ConfigDefinition;
 
 public class ExampleTomlConfig extends ConfigDefinition {
     public ExampleTomlConfig() {
-        super(new ResourceLocation(MysticLib.MODID, "example_toml_config"), FileTypes.TOML);
+        super(MysticLib.asResource("example_toml_config"), FileTypes.TOML);
 
         openCat("NUMBERS");
 

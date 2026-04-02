@@ -14,7 +14,7 @@ public class ConfigSerializer {
     public ConfigDefinition config;
     public File configFile;
 
-    public ConfigSerializer(ConfigDefinition config, boolean subfolder) {
+    public ConfigSerializer(ConfigDefinition config, boolean createSubfolder) {
 
         this.config = config;
 
@@ -25,7 +25,7 @@ public class ConfigSerializer {
             case TOML:
                 fileExtension = ".toml";
         }
-        if (subfolder) {
+        if (createSubfolder) {
             this.configFile = new File("config/" + config.id.getNamespace() + "/" + config.id.getPath() + fileExtension);
         } else {
             this.configFile = new File("config/" + config.id.getNamespace() + "_" + config.id.getPath() + fileExtension);

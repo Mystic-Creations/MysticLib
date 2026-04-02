@@ -7,7 +7,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 import net.mysticcreations.lib.MysticLib;
 
-@Mod(MysticLib.MODID)
+@Mod(MysticLib.MOD_ID)
 public final class LibForge {
     public static IEventBus EVENT_BUS;
 

@@ -10,11 +10,11 @@ public class ConfigInitializer {
     static Map<ResourceLocation, ConfigSerializer> definitions = new HashMap<>();
 
     public static void initializeConfigDefinition(ConfigDefinition definition) {
-        initializeConfigDefinition(definition, true);
+        initializeConfigDefinition(definition, false);
     }
 
-    public static void initializeConfigDefinition(ConfigDefinition definition, boolean subfolder) {
-        ConfigSerializer configSerializer = new ConfigSerializer(definition, subfolder);
+    public static void initializeConfigDefinition(ConfigDefinition definition, boolean createSubfolder) {
+        ConfigSerializer configSerializer = new ConfigSerializer(definition, createSubfolder);
         //configSerializer.readFromConfigFile();
         definitions.put(definition.id, configSerializer);
     }

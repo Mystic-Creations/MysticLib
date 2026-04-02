@@ -20,9 +20,9 @@ import java.util.List;
 
 public class ConfigScreenNetwork {
 
-    public static ResourceLocation SEND_CONFIG_SCREEN_PACKET = new ResourceLocation(MysticLib.MODID, "send_config_screen_packet");
-    public static ResourceLocation REQUEST_CONFIG_PACKET = new ResourceLocation(MysticLib.MODID, "request_config_packet");
-    public static ResourceLocation MODIFY_VALUE_PACKET = new ResourceLocation(MysticLib.MODID, "modify_value_packet");
+    public static ResourceLocation SEND_CONFIG_SCREEN_PACKET = MysticLib.asResource("send_config_screen_packet");
+    public static ResourceLocation REQUEST_CONFIG_PACKET = MysticLib.asResource("request_config_packet");
+    public static ResourceLocation MODIFY_VALUE_PACKET = MysticLib.asResource("modify_value_packet");
 
     public static void registerPackets() {
         NetworkManager.registerReceiver(NetworkManager.Side.S2C, SEND_CONFIG_SCREEN_PACKET, (buf, context) -> {

@@ -1,11 +1,11 @@
-# MysticLib
+# LumynLib
 
 <hr>
 
 Documentation Map - [Gradle Setup](#gradle-setup---repositories), [In-Mod Setup](#java---setup),
-[Config Library](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-CONFIG.md),
-[Variable Manager](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-VARIABLES.md),
-[Util Classes](https://github.com/Mystic-Creations/MysticLib/blob/rep-info/DOCS/DOCS-UTIL.md)
+[Config Library](https://github.com/Lumynity-Studios/LumynLib/blob/rep-info/DOCS/DOCS-CONFIG.md),
+[Variable Manager](https://github.com/Lumynity-Studios/LumynLib/blob/rep-info/DOCS/DOCS-VARIABLES.md),
+[Util Classes](https://github.com/Lumynity-Studios/LumynLib/blob/rep-info/DOCS/DOCS-UTIL.md)
 
 <hr>
 
@@ -47,13 +47,13 @@ subprojects {
 ### Groovy DSL
 
 ```groovy
-modImplementation "maven.modrinth:mysticlib:LIB_VERSION"
+modImplementation "maven.modrinth:LumynLib:LIB_VERSION"
 ```
 
 ### Kotlin DSL
 
 ```kotlin
-modImplementation("maven.modrinth:mysticlib:LIB_VERSION")
+modImplementation("maven.modrinth:LumynLib:LIB_VERSION")
 ```
 </details>
 <details>
@@ -62,13 +62,13 @@ modImplementation("maven.modrinth:mysticlib:LIB_VERSION")
 ### Groovy DSL
 
 ```groovy
-implementation fg.deobf("maven.modrinth:mysticlib:LIB_VERSION")
+implementation fg.deobf("maven.modrinth:LumynLib:LIB_VERSION")
 ```
 
 ### Kotlin DSL
 
 ```kotlin
-implementation(fg.deobf("maven.modrinth:mysticlib:LIB_VERSION"))
+implementation(fg.deobf("maven.modrinth:LumynLib:LIB_VERSION"))
 ```
 </details>
 <details>
@@ -77,13 +77,13 @@ implementation(fg.deobf("maven.modrinth:mysticlib:LIB_VERSION"))
 ### Groovy DSL
 
 ```groovy
-implementation "maven.modrinth:mysticlib:LIB_VERSION"
+implementation "maven.modrinth:LumynLib:LIB_VERSION"
 ```
 
 ### Kotlin DSL
 
 ```kotlin
-implementation("maven.modrinth:mysticlib:LIB_VERSION")
+implementation("maven.modrinth:LumynLib:LIB_VERSION")
 ```
 </details>
 
@@ -93,11 +93,11 @@ Replace `LIB_VERSION` with the desired release version found on Modrinth.<br>
 <hr>
 
 ## Java - Setup
-MysticLib needs to know your mod's ID for some util classes and methods.<br>
+LumynLib needs to know your mod's ID for some util classes and methods.<br>
 Add this to your main mod class:
 
 ```java
-public static final MysticLib Hook = new MysticLib("your_mod_id");
+public static final LumynLib Hook = new LumynLib("your_mod_id");
 ```
 > In an Architectury Loom project put it in the common init class
 

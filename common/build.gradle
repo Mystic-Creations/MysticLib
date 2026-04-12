@@ -11,7 +11,7 @@ architectury {
 }
 
 loom {
-    accessWidenerPath = file("src/main/resources/mysticlib.accesswidener")
+    accessWidenerPath = file("src/main/resources/lumynlib.accesswidener")
 }
 
 dependencies {
@@ -78,7 +78,7 @@ tasks.register('generateAccessWidener') {
             }
         }
 
-        file("src/main/resources/mysticlib.accesswidener").text = accessWidener
+        file("src/main/resources/lumynlib.accesswidener").text = accessWidener
     }
 }
 

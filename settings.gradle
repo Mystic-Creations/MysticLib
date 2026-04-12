@@ -7,7 +7,7 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'MysticLib'
+rootProject.name = 'LumynLib'
 
 include 'common'
 include 'fabric'

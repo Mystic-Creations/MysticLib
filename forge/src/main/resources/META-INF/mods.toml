@@ -1,31 +1,31 @@
 modLoader = "javafml"
 loaderVersion = "[1,)"
-issueTrackerURL = "https://github.com/Mystic-Creations/MysticLib/issues"
+issueTrackerURL = "https://github.com/Lumynity-Studios/LumynLib/issues"
 license = "All Rights Reserved"
 
 [[mods]]
-modId = "mysticlib"
+modId = "lumynlib"
 version = "${mod_version}"
-displayName = "MysticLib"
-description = "Multi-tool library mod for mods by Mystic Creations Team"
-authors = "Mystic Creations Team"
+displayName = "LumynLib"
+description = "Multi-tool library mod for mods by Lumynity Studios"
+authors = "Lumynity Studios"
 logoFile = "icon.png"
 
-[[dependencies.mysticlib]]
+[[dependencies.lumynlib]]
 modId = "forge"
 mandatory = true
 versionRange = "[${forge_version_range},)"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.mysticlib]]
+[[dependencies.lumynlib]]
 modId = "minecraft"
 mandatory = true
 versionRange = "[${minecraft_version}]"
 ordering = "NONE"
 side = "BOTH"
 
-[[dependencies.mysticlib]]
+[[dependencies.lumynlib]]
 modId = "architectury"
 mandatory = true
 versionRange = "[${architectury_api_version},)"

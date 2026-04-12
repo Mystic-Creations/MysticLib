@@ -4,7 +4,7 @@ plugins {
 
 loom {
     forge {
-        mixinConfig "mysticlib.mixins.json"
+        mixinConfig "lumynlib.mixins.json"
     }
 }
 
@@ -18,14 +18,14 @@ sourceSets {
 
 loom {
     forge {
-        mixinConfig "mysticlib.mixins.json",
-                "mysticlib_forge.mixins.json"
+        mixinConfig "lumynlib.mixins.json",
+                "lumynlib_forge.mixins.json"
     }
 
     runs {
         data {
             data()
-            programArgs "--all", "--mod", "mysticlib"
+            programArgs "--all", "--mod", "lumynlib"
             programArgs "--output", generatedResources.absolutePath
         }
     }

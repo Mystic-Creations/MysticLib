@@ -1,31 +1,31 @@
 {
   "schemaVersion": 1,
-  "id": "mysticlib",
+  "id": "lumynlib",
   "version": "${mod_version}",
-  "name": "MysticLib",
-  "description": "Multi-tool library mod for mods by Mystic Creations Team",
+  "name": "LumynLib",
+  "description": "Multi-tool library mod for mods by Lumynity Studios",
   "authors": [
-    "Mystic Creations Team"
+    "Lumynity Studios"
   ],
   "contact": {
-    "homepage": "https://modrinth.com/mod/mysticlib",
-    "sources": "https://github.com/Mystic-Creations/MysticLib/",
-    "issues": "https://github.com/Mystic-Creations/MysticLib/issues"
+    "homepage": "https://modrinth.com/mod/lumynlib",
+    "sources": "https://github.com/Lumynity-Studios/LumynLib/",
+    "issues": "https://github.com/Lumynity-Studios/LumynLib/issues"
   },
   "license": "All Rights Reserved",
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.mysticcreations.lib.fabric.LibFabric"
+      "net.lumynity.lib.fabric.LibFabric"
     ]
   },
   "mixins": [
-    "mysticlib.mixins.json",
-    "mysticlib_fabric.mixins.json"
+    "lumynlib.mixins.json",
+    "lumynlib_fabric.mixins.json"
   ],
   "fabric-datagen": [
-    "net.mysticcreations.lib.datagen.fabric.FabricDatagen"
+    "net.lumynity.lib.datagen.fabric.FabricDatagen"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",

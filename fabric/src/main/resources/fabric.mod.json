@@ -1,18 +1,16 @@
 {
   "schemaVersion": 1,
-  "id": "lumynlib",
+  "id": "${mod_id}",
   "version": "${mod_version}",
-  "name": "LumynLib",
-  "description": "Multi-tool library mod for mods by Lumynity Studios",
-  "authors": [
-    "Lumynity Studios"
-  ],
+  "name": "${mod_name}",
+  "description": "${mod_description}",
+  "authors": ["${mod_authors}"],
   "contact": {
     "homepage": "https://modrinth.com/mod/lumynlib",
     "sources": "https://github.com/Lumynity-Studios/LumynLib/",
     "issues": "https://github.com/Lumynity-Studios/LumynLib/issues"
   },
-  "license": "All Rights Reserved",
+  "license": "${mod_license}",
   "icon": "icon.png",
   "environment": "*",
   "entrypoints": {
@@ -21,17 +19,13 @@
     ]
   },
   "mixins": [
-    "lumynlib.mixins.json",
-    "lumynlib_fabric.mixins.json"
-  ],
-  "fabric-datagen": [
-    "net.lumynity.lib.datagen.fabric.FabricDatagen"
+    "${mod_id}.mixins.json",
+    "${mod_id}-fabric.mixins.json"
   ],
   "depends": {
     "fabricloader": ">=${fabric_loader_version}",
-    "minecraft": "${minecraft_version}",
-    "java": ">=17",
-    "architectury": ">=${architectury_api_version}",
-    "fabric-api": "*"
+    "fabric-api": ">=${fabric_api_version}",
+    "minecraft": "${minecraft_version_constraint}",
+    "architectury": ">=${architectury_api}"
   }
 }

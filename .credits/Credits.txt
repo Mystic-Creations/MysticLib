@@ -1,4 +1,4 @@
 eetgeenappels - TOML Parser, Config Lib
-JustMili - Util classes
+JustMili - Util classes, Documentation (wip)
 
 *dev note: add to this as you develop more things

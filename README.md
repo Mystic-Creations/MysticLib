@@ -1,4 +1,4 @@
-![Titlecard](https://cdn.modrinth.com/data/cached_images/e992e8e29dd158e2311fcf6e559c44b707dbbabe.png)
+![Titlecard](https://cdn.modrinth.com/data/cached_images/d4ab929e946a5b009f02e2430530684925cfa762.png)
 
 <pre><p align="center">"Our work, now a library"</p></pre>
 

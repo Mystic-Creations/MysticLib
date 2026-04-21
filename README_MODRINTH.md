@@ -1,11 +1,11 @@
-![Titlecard](https://cdn.modrinth.com/data/cached_images/d4ab929e946a5b009f02e2430530684925cfa762.png)
+![Titlecard](https://cdn.modrinth.com/data/cached_images/018f9ad185a48adef2e4c3284b8dd322fe71071e.png)
 
 <pre><center>"Our work, now a library"</center></pre>
 
 <hr>
 
 ## Description
-LumynLib is a library mod for all most used code in projects by Lumynity Studios.
+LumynLib is a library mod for all of most used code in projects by Lumynity Studios.
 <br><br>
 This library contains such as e.g. many useful util classes (Entity, Level, Ticking, Datagen etc),
 config library and variable management (Both cross-loader and Fabric Data Attachments API since 1.20.4).<br>
